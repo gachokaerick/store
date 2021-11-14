@@ -1,0 +1,38 @@
+{
+  "storeApp": {
+    "catalogItem": {
+      "home": {
+        "title": "Catalog Items",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Catalog Item",
+        "createOrEditLabel": "Create or edit a Catalog Item",
+        "notFound": "No Catalog Items found"
+      },
+      "created": "A new Catalog Item is created with identifier {{ param }}",
+      "updated": "A Catalog Item is updated with identifier {{ param }}",
+      "deleted": "A Catalog Item is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Catalog Item {{ id }}?"
+      },
+      "detail": {
+        "title": "Catalog Item"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "pictureFileName": "Picture File Name",
+      "pictureUrl": "Picture Url",
+      "availableStock": "Available Stock",
+      "restockThreshold": "Restock Threshold",
+      "maxStockThreshold": "Max Stock Threshold",
+      "onReorder": "On Reorder",
+      "catalogBrand": "Catalog Brand",
+      "catalogType": "Catalog Type",
+      "help": {
+        "restockThreshold": "Available stock at which we should reorder",
+        "maxStockThreshold": "Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)"
+      }
+    }
+  }
+}

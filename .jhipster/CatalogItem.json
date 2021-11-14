@@ -1,0 +1,80 @@
+{
+  "name": "CatalogItem",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "pictureFileName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "pictureUrl",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "availableStock",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "restockThreshold",
+      "fieldType": "Integer",
+      "javadoc": "Available stock at which we should reorder",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "maxStockThreshold",
+      "fieldType": "Integer",
+      "javadoc": "Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "onReorder",
+      "fieldType": "Boolean"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "catalogBrand",
+      "otherEntityRelationshipName": "catalogItem",
+      "relationshipValidateRules": "required",
+      "relationshipName": "catalogBrand",
+      "otherEntityField": "brand",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "catalogType",
+      "otherEntityRelationshipName": "catalogItem",
+      "relationshipValidateRules": "required",
+      "relationshipName": "catalogType",
+      "otherEntityField": "type",
+      "ownerSide": true
+    }
+  ],
+  "javadoc": "@author Erick Gachoka",
+  "entityTableName": "catalog_item",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["store", "catalog"],
+  "databaseType": "sql",
+  "changelogDate": "20211114051438"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "CatalogType",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [],
+  "javadoc": "@author Erick Gachoka",
+  "entityTableName": "catalog_type",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["store", "catalog"],
+  "databaseType": "sql",
+  "changelogDate": "20211114051338"
+}
