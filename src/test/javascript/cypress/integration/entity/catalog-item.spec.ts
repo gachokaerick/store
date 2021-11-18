@@ -27,7 +27,7 @@ describe('CatalogItem e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/catalog-items').as('entitiesRequest');
+    cy.intercept('GET', '/services/catalog/api/catalog-items').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -40,7 +40,7 @@ describe('CatalogItem e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/catalog-brands',
+      url: '/services/catalog/api/catalog-brands',
       body: { brand: 'Bike quantifying' },
     }).then(({ body }) => {
       catalogBrand = body;
@@ -48,7 +48,7 @@ describe('CatalogItem e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/catalog-types',
+      url: '/services/catalog/api/catalog-types',
       body: { type: 'deposit 24/7 Chips' },
     }).then(({ body }) => {
       catalogType = body;
@@ -56,19 +56,19 @@ describe('CatalogItem e2e test', () => {
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/catalog-items+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/catalog-items').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/catalog-items/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/catalog/api/catalog-items+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/catalog/api/catalog-items').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/catalog/api/catalog-items/*').as('deleteEntityRequest');
   });
 
   beforeEach(() => {
     // Simulate relationships api for better performance and reproducibility.
-    cy.intercept('GET', '/api/catalog-brands', {
+    cy.intercept('GET', '/services/catalog/api/catalog-brands', {
       statusCode: 200,
       body: [catalogBrand],
     });
 
-    cy.intercept('GET', '/api/catalog-types', {
+    cy.intercept('GET', '/services/catalog/api/catalog-types', {
       statusCode: 200,
       body: [catalogType],
     });
@@ -78,7 +78,7 @@ describe('CatalogItem e2e test', () => {
     if (catalogItem) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/catalog-items/${catalogItem.id}`,
+        url: `/services/catalog/api/catalog-items/${catalogItem.id}`,
       }).then(() => {
         catalogItem = undefined;
       });
@@ -89,7 +89,7 @@ describe('CatalogItem e2e test', () => {
     if (catalogBrand) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/catalog-brands/${catalogBrand.id}`,
+        url: `/services/catalog/api/catalog-brands/${catalogBrand.id}`,
       }).then(() => {
         catalogBrand = undefined;
       });
@@ -97,7 +97,7 @@ describe('CatalogItem e2e test', () => {
     if (catalogType) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/catalog-types/${catalogType.id}`,
+        url: `/services/catalog/api/catalog-types/${catalogType.id}`,
       }).then(() => {
         catalogType = undefined;
       });
@@ -147,7 +147,7 @@ describe('CatalogItem e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/catalog-items',
+          url: '/services/catalog/api/catalog-items',
 
           body: {
             ...catalogItemSample,
@@ -160,7 +160,7 @@ describe('CatalogItem e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/catalog-items+(?*|)',
+              url: '/services/catalog/api/catalog-items+(?*|)',
               times: 1,
             },
             {
@@ -197,7 +197,7 @@ describe('CatalogItem e2e test', () => {
       });
 
       it('last delete button click should delete instance of CatalogItem', () => {
-        cy.intercept('GET', '/api/catalog-items/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/catalog/api/catalog-items/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('catalogItem').should('exist');

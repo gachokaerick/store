@@ -45,5 +45,7 @@
   "embedded": false,
   "applications": ["store", "notification"],
   "databaseType": "sql",
-  "changelogDate": "20211114051138"
+  "changelogDate": "20211114051138",
+  "microserviceName": "notification",
+  "clientRootFolder": "notification"
 }

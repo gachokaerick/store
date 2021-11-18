@@ -58,6 +58,12 @@
       "BasketItem",
       "BasketCheckout"
     ],
-    "lastLiquibaseTimestamp": 1636867058000
+    "lastLiquibaseTimestamp": 1636867058000,
+    "applications": {
+      "orders": {
+        "serverPort": "8081",
+        "applicationIndex": 1
+      }
+    }
   }
 }

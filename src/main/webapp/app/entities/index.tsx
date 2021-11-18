@@ -4,17 +4,17 @@ import { Switch } from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 
-import Address from './address';
-import Payment from './payment';
-import OrderItem from './order-item';
-import Buyer from './buyer';
-import Notification from './notification';
-import Order from './order';
-import CatalogType from './catalog-type';
-import CatalogItem from './catalog-item';
-import CatalogBrand from './catalog-brand';
-import BasketItem from './basket-item';
-import BasketCheckout from './basket-checkout';
+import Address from './orders/address';
+import Payment from './orders/payment';
+import OrderItem from './orders/order-item';
+import Buyer from './orders/buyer';
+import Notification from './notification/notification';
+import Order from './orders/order';
+import CatalogType from './catalog/catalog-type';
+import CatalogItem from './catalog/catalog-item';
+import CatalogBrand from './catalog/catalog-brand';
+import BasketItem from './basket/basket-item';
+import BasketCheckout from './basket/basket-checkout';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (

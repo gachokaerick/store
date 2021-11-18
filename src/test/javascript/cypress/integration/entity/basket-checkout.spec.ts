@@ -36,7 +36,7 @@ describe('BasketCheckout e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/basket-checkouts').as('entitiesRequest');
+    cy.intercept('GET', '/services/basket/api/basket-checkouts').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -46,16 +46,16 @@ describe('BasketCheckout e2e test', () => {
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/basket-checkouts+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/basket-checkouts').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/basket-checkouts/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/basket/api/basket-checkouts+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/basket/api/basket-checkouts').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/basket/api/basket-checkouts/*').as('deleteEntityRequest');
   });
 
   afterEach(() => {
     if (basketCheckout) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/basket-checkouts/${basketCheckout.id}`,
+        url: `/services/basket/api/basket-checkouts/${basketCheckout.id}`,
       }).then(() => {
         basketCheckout = undefined;
       });
@@ -105,7 +105,7 @@ describe('BasketCheckout e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/basket-checkouts',
+          url: '/services/basket/api/basket-checkouts',
           body: basketCheckoutSample,
         }).then(({ body }) => {
           basketCheckout = body;
@@ -113,7 +113,7 @@ describe('BasketCheckout e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/basket-checkouts+(?*|)',
+              url: '/services/basket/api/basket-checkouts+(?*|)',
               times: 1,
             },
             {
@@ -150,7 +150,7 @@ describe('BasketCheckout e2e test', () => {
       });
 
       it('last delete button click should delete instance of BasketCheckout', () => {
-        cy.intercept('GET', '/api/basket-checkouts/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/basket/api/basket-checkouts/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('basketCheckout').should('exist');

@@ -33,7 +33,7 @@ describe('Payment e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/payments').as('entitiesRequest');
+    cy.intercept('GET', '/services/orders/api/payments').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -47,7 +47,7 @@ describe('Payment e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/orders',
+      url: '/services/orders/api/orders',
       body: {"orderDate":"2021-11-14T01:07:22.702Z","orderStatus":"DRAFT","description":"port navigate"},
     }).then(({ body }) => {
       order = body;
@@ -56,15 +56,15 @@ describe('Payment e2e test', () => {
    */
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/payments+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/payments').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/payments/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/orders/api/payments+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/orders/api/payments').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/orders/api/payments/*').as('deleteEntityRequest');
   });
 
   /* Disabled due to incompatibility
   beforeEach(() => {
     // Simulate relationships api for better performance and reproducibility.
-    cy.intercept('GET', '/api/orders', {
+    cy.intercept('GET', '/services/orders/api/orders', {
       statusCode: 200,
       body: [order],
     });
@@ -76,7 +76,7 @@ describe('Payment e2e test', () => {
     if (payment) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/payments/${payment.id}`,
+        url: `/services/orders/api/payments/${payment.id}`,
       }).then(() => {
         payment = undefined;
       });
@@ -88,7 +88,7 @@ describe('Payment e2e test', () => {
     if (order) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/orders/${order.id}`,
+        url: `/services/orders/api/orders/${order.id}`,
       }).then(() => {
         order = undefined;
       });
@@ -140,7 +140,7 @@ describe('Payment e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/payments',
+          url: '/services/orders/api/payments',
   
           body: {
             ...paymentSample,
@@ -152,7 +152,7 @@ describe('Payment e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/payments+(?*|)',
+              url: '/services/orders/api/payments+(?*|)',
               times: 1,
             },
             {
@@ -200,7 +200,7 @@ describe('Payment e2e test', () => {
       });
 
       it.skip('last delete button click should delete instance of Payment', () => {
-        cy.intercept('GET', '/api/payments/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/orders/api/payments/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('payment').should('exist');

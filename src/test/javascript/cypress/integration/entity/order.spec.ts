@@ -27,7 +27,7 @@ describe('Order e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/orders').as('entitiesRequest');
+    cy.intercept('GET', '/services/orders/api/orders').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -41,7 +41,7 @@ describe('Order e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/addresses',
+      url: '/services/orders/api/addresses',
       body: {"street":"Rath Mountains","city":"Lake Elnastad","town":"Keys","country":"Finland","zipcode":"Cliffs"},
     }).then(({ body }) => {
       address = body;
@@ -49,7 +49,7 @@ describe('Order e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/buyers',
+      url: '/services/orders/api/buyers',
       body: {"firstName":"Magdalena","lastName":"Huel","gender":"FEMALE","email":"IByEyP@GL.p$K","phone":"(367) 348-0240"},
     }).then(({ body }) => {
       buyer = body;
@@ -58,30 +58,30 @@ describe('Order e2e test', () => {
    */
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/orders+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/orders').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/orders/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/orders/api/orders+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/orders/api/orders').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/orders/api/orders/*').as('deleteEntityRequest');
   });
 
   /* Disabled due to incompatibility
   beforeEach(() => {
     // Simulate relationships api for better performance and reproducibility.
-    cy.intercept('GET', '/api/addresses', {
+    cy.intercept('GET', '/services/orders/api/addresses', {
       statusCode: 200,
       body: [address],
     });
 
-    cy.intercept('GET', '/api/order-items', {
+    cy.intercept('GET', '/services/orders/api/order-items', {
       statusCode: 200,
       body: [],
     });
 
-    cy.intercept('GET', '/api/payments', {
+    cy.intercept('GET', '/services/orders/api/payments', {
       statusCode: 200,
       body: [],
     });
 
-    cy.intercept('GET', '/api/buyers', {
+    cy.intercept('GET', '/services/orders/api/buyers', {
       statusCode: 200,
       body: [buyer],
     });
@@ -93,7 +93,7 @@ describe('Order e2e test', () => {
     if (order) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/orders/${order.id}`,
+        url: `/services/orders/api/orders/${order.id}`,
       }).then(() => {
         order = undefined;
       });
@@ -105,7 +105,7 @@ describe('Order e2e test', () => {
     if (address) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/addresses/${address.id}`,
+        url: `/services/orders/api/addresses/${address.id}`,
       }).then(() => {
         address = undefined;
       });
@@ -113,7 +113,7 @@ describe('Order e2e test', () => {
     if (buyer) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/buyers/${buyer.id}`,
+        url: `/services/orders/api/buyers/${buyer.id}`,
       }).then(() => {
         buyer = undefined;
       });
@@ -165,7 +165,7 @@ describe('Order e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/orders',
+          url: '/services/orders/api/orders',
   
           body: {
             ...orderSample,
@@ -178,7 +178,7 @@ describe('Order e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/orders+(?*|)',
+              url: '/services/orders/api/orders+(?*|)',
               times: 1,
             },
             {
@@ -226,7 +226,7 @@ describe('Order e2e test', () => {
       });
 
       it.skip('last delete button click should delete instance of Order', () => {
-        cy.intercept('GET', '/api/orders/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/orders/api/orders/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('order').should('exist');

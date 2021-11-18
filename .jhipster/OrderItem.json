@@ -52,5 +52,7 @@
   "embedded": false,
   "applications": ["store", "orders"],
   "databaseType": "sql",
-  "changelogDate": "20211114050938"
+  "changelogDate": "20211114050938",
+  "microserviceName": "orders",
+  "clientRootFolder": "orders"
 }

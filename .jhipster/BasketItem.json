@@ -49,5 +49,7 @@
   "embedded": false,
   "applications": ["store", "basket"],
   "databaseType": "sql",
-  "changelogDate": "20211114051638"
+  "changelogDate": "20211114051638",
+  "microserviceName": "basket",
+  "clientRootFolder": "basket"
 }

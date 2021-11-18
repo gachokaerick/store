@@ -25,7 +25,7 @@ describe('CatalogType e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/catalog-types').as('entitiesRequest');
+    cy.intercept('GET', '/services/catalog/api/catalog-types').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -35,16 +35,16 @@ describe('CatalogType e2e test', () => {
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/catalog-types+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/catalog-types').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/catalog-types/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/catalog/api/catalog-types+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/catalog/api/catalog-types').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/catalog/api/catalog-types/*').as('deleteEntityRequest');
   });
 
   afterEach(() => {
     if (catalogType) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/catalog-types/${catalogType.id}`,
+        url: `/services/catalog/api/catalog-types/${catalogType.id}`,
       }).then(() => {
         catalogType = undefined;
       });
@@ -94,7 +94,7 @@ describe('CatalogType e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/catalog-types',
+          url: '/services/catalog/api/catalog-types',
           body: catalogTypeSample,
         }).then(({ body }) => {
           catalogType = body;
@@ -102,7 +102,7 @@ describe('CatalogType e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/catalog-types+(?*|)',
+              url: '/services/catalog/api/catalog-types+(?*|)',
               times: 1,
             },
             {
@@ -139,7 +139,7 @@ describe('CatalogType e2e test', () => {
       });
 
       it('last delete button click should delete instance of CatalogType', () => {
-        cy.intercept('GET', '/api/catalog-types/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/catalog/api/catalog-types/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('catalogType').should('exist');

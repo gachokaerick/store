@@ -26,7 +26,7 @@ describe('Notification e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/notifications').as('entitiesRequest');
+    cy.intercept('GET', '/services/notification/api/notifications').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -40,7 +40,7 @@ describe('Notification e2e test', () => {
     // create an instance at the required relationship entity:
     cy.authenticatedRequest({
       method: 'POST',
-      url: '/api/users',
+      url: '/services/notification/api/users',
       body: {"id":"3d085568-59ac-4aba-9066-afae23e3c835","login":"Loan","firstName":"Mara","lastName":"Little"},
     }).then(({ body }) => {
       user = body;
@@ -49,15 +49,15 @@ describe('Notification e2e test', () => {
    */
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/notifications+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/notifications').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/notifications/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/notification/api/notifications+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/notification/api/notifications').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/notification/api/notifications/*').as('deleteEntityRequest');
   });
 
   /* Disabled due to incompatibility
   beforeEach(() => {
     // Simulate relationships api for better performance and reproducibility.
-    cy.intercept('GET', '/api/users', {
+    cy.intercept('GET', '/services/notification/api/users', {
       statusCode: 200,
       body: [user],
     });
@@ -69,7 +69,7 @@ describe('Notification e2e test', () => {
     if (notification) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/notifications/${notification.id}`,
+        url: `/services/notification/api/notifications/${notification.id}`,
       }).then(() => {
         notification = undefined;
       });
@@ -81,7 +81,7 @@ describe('Notification e2e test', () => {
     if (user) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/users/${user.id}`,
+        url: `/services/notification/api/users/${user.id}`,
       }).then(() => {
         user = undefined;
       });
@@ -133,7 +133,7 @@ describe('Notification e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/notifications',
+          url: '/services/notification/api/notifications',
   
           body: {
             ...notificationSample,
@@ -145,7 +145,7 @@ describe('Notification e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/notifications+(?*|)',
+              url: '/services/notification/api/notifications+(?*|)',
               times: 1,
             },
             {
@@ -193,7 +193,7 @@ describe('Notification e2e test', () => {
       });
 
       it.skip('last delete button click should delete instance of Notification', () => {
-        cy.intercept('GET', '/api/notifications/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/notification/api/notifications/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('notification').should('exist');

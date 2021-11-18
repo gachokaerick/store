@@ -76,5 +76,7 @@
   "embedded": false,
   "applications": ["store", "catalog"],
   "databaseType": "sql",
-  "changelogDate": "20211114051438"
+  "changelogDate": "20211114051438",
+  "microserviceName": "catalog",
+  "clientRootFolder": "catalog"
 }

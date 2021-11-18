@@ -33,7 +33,7 @@ describe('BasketItem e2e test', () => {
     cy.get('@oauth2Data').then(oauth2Data => {
       cy.oauthLogin(oauth2Data, username, password);
     });
-    cy.intercept('GET', '/api/basket-items').as('entitiesRequest');
+    cy.intercept('GET', '/services/basket/api/basket-items').as('entitiesRequest');
     cy.visit('');
     cy.get(entityItemSelector).should('exist');
   });
@@ -43,16 +43,16 @@ describe('BasketItem e2e test', () => {
   });
 
   beforeEach(() => {
-    cy.intercept('GET', '/api/basket-items+(?*|)').as('entitiesRequest');
-    cy.intercept('POST', '/api/basket-items').as('postEntityRequest');
-    cy.intercept('DELETE', '/api/basket-items/*').as('deleteEntityRequest');
+    cy.intercept('GET', '/services/basket/api/basket-items+(?*|)').as('entitiesRequest');
+    cy.intercept('POST', '/services/basket/api/basket-items').as('postEntityRequest');
+    cy.intercept('DELETE', '/services/basket/api/basket-items/*').as('deleteEntityRequest');
   });
 
   afterEach(() => {
     if (basketItem) {
       cy.authenticatedRequest({
         method: 'DELETE',
-        url: `/api/basket-items/${basketItem.id}`,
+        url: `/services/basket/api/basket-items/${basketItem.id}`,
       }).then(() => {
         basketItem = undefined;
       });
@@ -102,7 +102,7 @@ describe('BasketItem e2e test', () => {
       beforeEach(() => {
         cy.authenticatedRequest({
           method: 'POST',
-          url: '/api/basket-items',
+          url: '/services/basket/api/basket-items',
           body: basketItemSample,
         }).then(({ body }) => {
           basketItem = body;
@@ -110,7 +110,7 @@ describe('BasketItem e2e test', () => {
           cy.intercept(
             {
               method: 'GET',
-              url: '/api/basket-items+(?*|)',
+              url: '/services/basket/api/basket-items+(?*|)',
               times: 1,
             },
             {
@@ -147,7 +147,7 @@ describe('BasketItem e2e test', () => {
       });
 
       it('last delete button click should delete instance of BasketItem', () => {
-        cy.intercept('GET', '/api/basket-items/*').as('dialogDeleteRequest');
+        cy.intercept('GET', '/services/basket/api/basket-items/*').as('dialogDeleteRequest');
         cy.get(entityDeleteButtonSelector).last().click();
         cy.wait('@dialogDeleteRequest');
         cy.getEntityDeleteDialogHeading('basketItem').should('exist');

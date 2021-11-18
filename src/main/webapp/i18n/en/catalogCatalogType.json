@@ -1,0 +1,28 @@
+{
+  "storeApp": {
+    "catalogCatalogType": {
+      "home": {
+        "title": "Catalog Types",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Catalog Type",
+        "createOrEditLabel": "Create or edit a Catalog Type",
+        "notFound": "No Catalog Types found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Catalog Type {{ id }}?"
+      },
+      "detail": {
+        "title": "Catalog Type"
+      },
+      "id": "ID",
+      "type": "Type"
+    }
+  },
+  "catalogApp": {
+    "catalogCatalogType": {
+      "created": "A new Catalog Type is created with identifier {{ param }}",
+      "updated": "A Catalog Type is updated with identifier {{ param }}",
+      "deleted": "A Catalog Type is deleted with identifier {{ param }}"
+    }
+  }
+}

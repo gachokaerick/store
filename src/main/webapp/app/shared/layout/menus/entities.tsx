@@ -13,37 +13,37 @@ export const EntitiesMenu = props => (
   >
     <>{/* to avoid warnings when empty */}</>
     <MenuItem icon="asterisk" to="/address">
-      <Translate contentKey="global.menu.entities.address" />
+      <Translate contentKey="global.menu.entities.ordersAddress" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/payment">
-      <Translate contentKey="global.menu.entities.payment" />
+      <Translate contentKey="global.menu.entities.ordersPayment" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/order-item">
-      <Translate contentKey="global.menu.entities.orderItem" />
+      <Translate contentKey="global.menu.entities.ordersOrderItem" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/buyer">
-      <Translate contentKey="global.menu.entities.buyer" />
+      <Translate contentKey="global.menu.entities.ordersBuyer" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/notification">
-      <Translate contentKey="global.menu.entities.notification" />
+      <Translate contentKey="global.menu.entities.notificationNotification" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/order">
-      <Translate contentKey="global.menu.entities.order" />
+      <Translate contentKey="global.menu.entities.ordersOrder" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/catalog-type">
-      <Translate contentKey="global.menu.entities.catalogType" />
+      <Translate contentKey="global.menu.entities.catalogCatalogType" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/catalog-item">
-      <Translate contentKey="global.menu.entities.catalogItem" />
+      <Translate contentKey="global.menu.entities.catalogCatalogItem" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/catalog-brand">
-      <Translate contentKey="global.menu.entities.catalogBrand" />
+      <Translate contentKey="global.menu.entities.catalogCatalogBrand" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/basket-item">
-      <Translate contentKey="global.menu.entities.basketItem" />
+      <Translate contentKey="global.menu.entities.basketBasketItem" />
     </MenuItem>
     <MenuItem icon="asterisk" to="/basket-checkout">
-      <Translate contentKey="global.menu.entities.basketCheckout" />
+      <Translate contentKey="global.menu.entities.basketBasketCheckout" />
     </MenuItem>
     {/* jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here */}
   </NavDropdown>
