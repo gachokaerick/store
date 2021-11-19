@@ -15,7 +15,7 @@ const initialState: EntityState<INotification> = {
   updateSuccess: false,
 };
 
-const apiUrl = 'api/notifications';
+const apiUrl = 'services/notification/api/notifications';
 
 // Actions
 
