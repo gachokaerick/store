@@ -10,7 +10,7 @@
   "relationships": [],
   "javadoc": "@author Erick Gachoka",
   "entityTableName": "catalog_type",
-  "dto": "no",
+  "dto": "mapstruct",
   "pagination": "pagination",
   "service": "serviceClass",
   "jpaMetamodelFiltering": false,

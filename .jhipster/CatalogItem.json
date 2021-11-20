@@ -67,7 +67,7 @@
   ],
   "javadoc": "@author Erick Gachoka",
   "entityTableName": "catalog_item",
-  "dto": "no",
+  "dto": "mapstruct",
   "pagination": "pagination",
   "service": "serviceClass",
   "jpaMetamodelFiltering": false,

@@ -63,6 +63,18 @@
       "orders": {
         "serverPort": "8081",
         "applicationIndex": 1
+      },
+      "catalog": {
+        "serverPort": "8082",
+        "applicationIndex": 2
+      },
+      "basket": {
+        "serverPort": "8083",
+        "applicationIndex": 3
+      },
+      "notification": {
+        "serverPort": "8084",
+        "applicationIndex": 4
       }
     }
   }

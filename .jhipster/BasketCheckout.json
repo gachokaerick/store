@@ -87,7 +87,7 @@
   "relationships": [],
   "javadoc": "@author Erick Gachoka",
   "entityTableName": "basket_checkout",
-  "dto": "no",
+  "dto": "mapstruct",
   "pagination": "pagination",
   "service": "serviceClass",
   "jpaMetamodelFiltering": false,
