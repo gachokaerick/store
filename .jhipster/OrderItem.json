@@ -54,5 +54,6 @@
   "databaseType": "sql",
   "changelogDate": "20211114050938",
   "microserviceName": "orders",
-  "clientRootFolder": "orders"
+  "clientRootFolder": "orders",
+  "skipServer": true
 }

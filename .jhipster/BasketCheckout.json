@@ -98,5 +98,6 @@
   "databaseType": "sql",
   "changelogDate": "20211114051738",
   "microserviceName": "basket",
-  "clientRootFolder": "basket"
+  "clientRootFolder": "basket",
+  "skipServer": true
 }

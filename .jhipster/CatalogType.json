@@ -21,5 +21,6 @@
   "databaseType": "sql",
   "changelogDate": "20211114051338",
   "microserviceName": "catalog",
-  "clientRootFolder": "catalog"
+  "clientRootFolder": "catalog",
+  "skipServer": true
 }
