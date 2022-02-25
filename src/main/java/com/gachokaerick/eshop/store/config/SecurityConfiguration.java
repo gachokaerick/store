@@ -98,6 +98,8 @@ public class SecurityConfiguration {
                 .frameOptions().disable()
         .and()
             .authorizeExchange()
+            .pathMatchers(HttpMethod.GET, "/services/catalog/api/catalog-brands/**").permitAll()
+            .pathMatchers(HttpMethod.GET, "/services/catalog/api/catalog-types/**").permitAll()
             .pathMatchers("/").permitAll()
             .pathMatchers("/*.*").permitAll()
             .pathMatchers("/api/authenticate").permitAll()
@@ -112,7 +114,7 @@ public class SecurityConfiguration {
             .pathMatchers("/management/prometheus").permitAll()
             .pathMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN);
 
-        http.oauth2Login(oauth2 -> oauth2.authorizationRequestResolver(authorizationRequestResolver(this.clientRegistrationRepository)))            
+        http.oauth2Login(oauth2 -> oauth2.authorizationRequestResolver(authorizationRequestResolver(this.clientRegistrationRepository)))
             .oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
