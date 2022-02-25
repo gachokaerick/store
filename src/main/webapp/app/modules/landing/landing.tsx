@@ -2,12 +2,12 @@ import './landing.scss';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import React, { useEffect } from 'react';
 import { REDIRECT_URL } from 'app/shared/util/url-utils';
-import { Select, Space } from 'antd';
+import { Button, Col, Image, Pagination, Row, Select, Space, Typography } from 'antd';
 import { getEntities as getCatalogBrands } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
 import { getEntities as getCatalogTypes } from 'app/entities/catalog/catalog-type/catalog-type.reducer';
-import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 
 export const Landing = () => {
+  const { Text } = Typography;
   const dispatch = useAppDispatch();
   const catalogBrands = useAppSelector(state => state.catalogBrand.entities);
   const catalogTypes = useAppSelector(state => state.catalogType.entities);
@@ -23,7 +23,7 @@ export const Landing = () => {
   useEffect(() => {
     dispatch(getCatalogBrands({}));
     dispatch(getCatalogTypes({}));
-    dispatch(getCatalogItems({}));
+    // dispatch(getCatalogItems({}));
   }, []);
 
   const { Option } = Select;
@@ -40,6 +40,24 @@ export const Landing = () => {
             {catalogTypes ? catalogTypes.map(type => <Option key={type.id}>{type.type}</Option>) : null}
           </Select>
         </Space>
+      </section>
+
+      <section>
+        <Row gutter={16} justify={'center'} className={'mt-4'}>
+          <Col span={8}>
+            <Row justify={'center'}>
+              <Space align={'center'} direction={'vertical'}>
+                <Image className={'catalog-image'} src={'../../../content/images/imageonline-co-placeholder-image.jpg'} />
+                <Button type={'primary'}>Add To Cart</Button>
+                <Text>Leather Pants</Text>
+                <Text strong>$12.00</Text>
+              </Space>
+            </Row>
+          </Col>
+        </Row>
+        <Row justify={'center'} className={'mt-4'}>
+          <Pagination total={85} showSizeChanger showQuickJumper showTotal={total => `Total ${total} items`} />
+        </Row>
       </section>
     </div>
   );
