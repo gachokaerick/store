@@ -100,6 +100,7 @@ public class SecurityConfiguration {
             .authorizeExchange()
             .pathMatchers(HttpMethod.GET, "/services/catalog/api/catalog-brands/**").permitAll()
             .pathMatchers(HttpMethod.GET, "/services/catalog/api/catalog-types/**").permitAll()
+            .pathMatchers(HttpMethod.GET, "/services/catalog/api/catalog-items/**").permitAll()
             .pathMatchers("/").permitAll()
             .pathMatchers("/*.*").permitAll()
             .pathMatchers("/api/authenticate").permitAll()
