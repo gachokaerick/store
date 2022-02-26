@@ -8,7 +8,6 @@ import { getEntities as getCatalogTypes } from 'app/entities/catalog/catalog-typ
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { RouteComponentProps } from 'react-router-dom';
 
 export const Landing = (props: RouteComponentProps<{ url: string }>) => {
@@ -22,7 +21,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const totalItems = useAppSelector(state => state.catalogItem.totalItems);
 
   const [paginationState, setPaginationState] = useState(
-    overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
+    overridePaginationStateWithQueryParams(getSortState(props.location, 6, 'id'), props.location.search)
   );
   useEffect(() => {
     const redirectURL = localStorage.getItem(REDIRECT_URL);
@@ -35,14 +34,17 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   useEffect(() => {
     dispatch(getCatalogBrands({}));
     dispatch(getCatalogTypes({}));
+  }, []);
+
+  useEffect(() => {
     dispatch(
       getCatalogItems({
         page: paginationState.activePage - 1,
-        size: paginationState.itemsPerPage,
+        size: 6,
         sort: `${paginationState.sort},${paginationState.order}`,
       })
     );
-  }, []);
+  }, [paginationState]);
 
   const handlePagination = currentPage =>
     setPaginationState({
@@ -71,7 +73,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
                 <Col span={8} key={item.id}>
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
-                      <Image className={'catalog-image'} src={item.pictureUrl} crossOrigin={'anonymous'} />
+                      <Image className={'catalog-image'} src={item.pictureUrl} />
                       <Button type={'primary'}>Add To Cart</Button>
                       <Text>{item.name}</Text>
                       <Text strong>${item.price}</Text>
