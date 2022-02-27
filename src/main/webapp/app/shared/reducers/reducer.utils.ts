@@ -76,7 +76,7 @@ export interface EntityState<T> {
   updating: boolean;
   totalItems?: number;
   updateSuccess: boolean;
-  selectedItems?: ReadonlyArray<T>;
+  selectedItem?: T;
 }
 
 /**

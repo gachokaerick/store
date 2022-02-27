@@ -16,5 +16,4 @@ export const APP_TWO_DIGITS_AFTER_POINT_NUMBER_FORMAT = '0,0.[00]';
 
 export const ACTIONS = {
   SELECT: 'Select',
-  DESELECT: 'Deselect',
 };

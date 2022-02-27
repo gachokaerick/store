@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { AnyAction, createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
-import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { ICatalogBrand, defaultValue } from 'app/shared/model/catalog/catalog-brand.model';
+import { createEntitySlice, EntityState, IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { defaultValue, ICatalogBrand } from 'app/shared/model/catalog/catalog-brand.model';
 import { ACTIONS } from 'app/config/constants';
-import { Action } from 'redux';
 
 const initialState: EntityState<ICatalogBrand> = {
   loading: false,
@@ -15,7 +14,7 @@ const initialState: EntityState<ICatalogBrand> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
-  selectedItems: [],
+  selectedItem: defaultValue,
 };
 
 const apiUrl = 'services/catalog/api/catalog-brands';
@@ -77,12 +76,8 @@ export const deleteEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
-export const selectBrand = (entityId: number, selected: boolean) => {
-  if (selected) {
-    return { type: ACTIONS.SELECT, payload: entityId };
-  } else {
-    return { type: ACTIONS.DESELECT, payload: entityId };
-  }
+export const selectBrand = (entityId: number) => {
+  return { type: ACTIONS.SELECT, payload: entityId };
 };
 
 // slice
@@ -102,12 +97,17 @@ export const CatalogBrandSlice = createEntitySlice({
         state.entity = {};
       })
       .addCase(ACTIONS.SELECT, (state, action: AnyAction) => {
-        const brand: ICatalogBrand = state.entities.filter(it => it.id.toString() === action.payload)[0];
-        state.selectedItems = [...state.selectedItems, brand];
-      })
-      .addCase(ACTIONS.DESELECT, (state, action: AnyAction) => {
-        const brand: ICatalogBrand = state.entities.filter(it => it.id.toString() === action.payload)[0];
-        state.selectedItems = state.selectedItems.filter(it => it.id !== brand.id);
+        // eslint-disable-next-line no-console
+        console.log('payload: ', action.payload);
+        if (action.payload) {
+          // eslint-disable-next-line no-console
+          console.log('payload exists');
+          state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('resetting selection');
+          state.selectedItem = defaultValue;
+        }
       })
       .addMatcher(isFulfilled(getEntities), (state, action) => {
         return {

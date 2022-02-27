@@ -15,14 +15,38 @@ const initialState: EntityState<ICatalogItem> = {
   updateSuccess: false,
 };
 
+export type CatalogItemsQueryParams = {
+  query?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+  ids?: string;
+  name?: string;
+  description?: string;
+  catalogBrand?: string;
+  catalogType?: string;
+  term?: string;
+};
+
 const apiUrl = 'services/catalog/api/catalog-items';
 
 // Actions
 
-export const getEntities = createAsyncThunk('catalogItem/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
-  return axios.get<ICatalogItem[]>(requestUrl);
-});
+export const getEntities = createAsyncThunk(
+  'catalogItem/fetch_entity_list',
+  async ({ page, size, sort, catalogBrand, catalogType }: CatalogItemsQueryParams) => {
+    let requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+    if (catalogBrand) {
+      requestUrl = requestUrl + `&catalogBrand=${catalogBrand}`;
+    }
+    if (catalogType) {
+      requestUrl = requestUrl + `&catalogType=${catalogType}`;
+    }
+    // eslint-disable-next-line no-console
+    console.log('get items with url: ', requestUrl);
+    return axios.get<ICatalogItem[]>(requestUrl);
+  }
+);
 
 export const getEntity = createAsyncThunk(
   'catalogItem/fetch_entity',

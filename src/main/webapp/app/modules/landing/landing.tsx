@@ -19,7 +19,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const catalogTypes = useAppSelector(state => state.catalogType.entities);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
   const totalItems = useAppSelector(state => state.catalogItem.totalItems);
-  const selectedBrands = useAppSelector(state => state.catalogBrand.selectedItems);
+  const selectedBrand = useAppSelector(state => state.catalogBrand.selectedItem);
 
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, 6, 'id'), props.location.search)
@@ -53,9 +53,32 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
       activePage: currentPage,
     });
 
-  const brandSelection = (id, selected: boolean) => {
-    dispatch(selectBrand(id, selected));
+  const brandSelection = id => {
+    // eslint-disable-next-line no-console
+    console.log('selected: ', id);
+    dispatch(selectBrand(id));
   };
+
+  useEffect(() => {
+    if (selectedBrand?.id) {
+      dispatch(
+        getCatalogItems({
+          page: paginationState.activePage - 1,
+          size: 6,
+          sort: `${paginationState.sort},${paginationState.order}`,
+          catalogBrand: selectedBrand?.brand,
+        })
+      );
+    } else {
+      dispatch(
+        getCatalogItems({
+          page: paginationState.activePage - 1,
+          size: 6,
+          sort: `${paginationState.sort},${paginationState.order}`,
+        })
+      );
+    }
+  }, [selectedBrand]);
 
   return (
     <div>
@@ -64,11 +87,10 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
         <Space size={'small'} className={'h-100 container'}>
           <Select
             className="select-filter"
-            mode="multiple"
             allowClear
             placeholder="Brand"
-            onSelect={(id, option) => brandSelection(id, true)}
-            onDeselect={(id, option) => brandSelection(id, false)}
+            onSelect={(id, option) => brandSelection(id)}
+            onClear={() => brandSelection(null)}
           >
             {catalogBrands ? catalogBrands.map(brand => <Option key={brand.id}>{brand.brand}</Option>) : null}
           </Select>
