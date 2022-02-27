@@ -43,6 +43,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
         page: paginationState.activePage - 1,
         size: 6,
         sort: `${paginationState.sort},${paginationState.order}`,
+        catalogBrand: selectedBrand?.brand,
       })
     );
   }, [paginationState]);
@@ -58,24 +59,14 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   };
 
   useEffect(() => {
-    if (selectedBrand?.id) {
-      dispatch(
-        getCatalogItems({
-          page: paginationState.activePage - 1,
-          size: 6,
-          sort: `${paginationState.sort},${paginationState.order}`,
-          catalogBrand: selectedBrand?.brand,
-        })
-      );
-    } else {
-      dispatch(
-        getCatalogItems({
-          page: paginationState.activePage - 1,
-          size: 6,
-          sort: `${paginationState.sort},${paginationState.order}`,
-        })
-      );
-    }
+    dispatch(
+      getCatalogItems({
+        page: paginationState.activePage - 1,
+        size: 6,
+        sort: `${paginationState.sort},${paginationState.order}`,
+        catalogBrand: selectedBrand?.brand,
+      })
+    );
   }, [selectedBrand]);
 
   return (
