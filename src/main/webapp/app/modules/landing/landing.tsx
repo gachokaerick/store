@@ -54,8 +54,6 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     });
 
   const brandSelection = id => {
-    // eslint-disable-next-line no-console
-    console.log('selected: ', id);
     dispatch(selectBrand(id));
   };
 

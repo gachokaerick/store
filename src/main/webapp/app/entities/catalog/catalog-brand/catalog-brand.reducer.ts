@@ -97,15 +97,9 @@ export const CatalogBrandSlice = createEntitySlice({
         state.entity = {};
       })
       .addCase(ACTIONS.SELECT, (state, action: AnyAction) => {
-        // eslint-disable-next-line no-console
-        console.log('payload: ', action.payload);
         if (action.payload) {
-          // eslint-disable-next-line no-console
-          console.log('payload exists');
           state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
         } else {
-          // eslint-disable-next-line no-console
-          console.log('resetting selection');
           state.selectedItem = defaultValue;
         }
       })
