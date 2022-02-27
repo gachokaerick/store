@@ -35,6 +35,10 @@ const apiUrl = 'services/catalog/api/catalog-items';
 export const getEntities = createAsyncThunk(
   'catalogItem/fetch_entity_list',
   async ({ page, size, sort, catalogBrand, catalogType }: CatalogItemsQueryParams) => {
+    // eslint-disable-next-line no-console
+    console.log('brand: ', catalogBrand);
+    // eslint-disable-next-line no-console
+    console.log('type: ', catalogType);
     let requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
     if (catalogBrand) {
       requestUrl = requestUrl + `&catalogBrand=${catalogBrand}`;
@@ -42,8 +46,6 @@ export const getEntities = createAsyncThunk(
     if (catalogType) {
       requestUrl = requestUrl + `&catalogType=${catalogType}`;
     }
-    // eslint-disable-next-line no-console
-    console.log('get items with url: ', requestUrl);
     return axios.get<ICatalogItem[]>(requestUrl);
   }
 );

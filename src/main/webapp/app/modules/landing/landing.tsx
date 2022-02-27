@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { REDIRECT_URL } from 'app/shared/util/url-utils';
 import { Button, Col, Image, Row, Select, Space, Typography } from 'antd';
 import { getEntities as getCatalogBrands, selectBrand } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
-import { getEntities as getCatalogTypes } from 'app/entities/catalog/catalog-type/catalog-type.reducer';
+import { getEntities as getCatalogTypes, selectType } from 'app/entities/catalog/catalog-type/catalog-type.reducer';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
@@ -20,10 +20,20 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
   const totalItems = useAppSelector(state => state.catalogItem.totalItems);
   const selectedBrand = useAppSelector(state => state.catalogBrand.selectedItem);
+  const selectedType = useAppSelector(state => state.catalogType.selectedItem);
 
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, 6, 'id'), props.location.search)
   );
+
+  const catalogItemsQueryParams = {
+    page: paginationState.activePage - 1,
+    size: 6,
+    sort: `${paginationState.sort},${paginationState.order}`,
+    catalogBrand: selectedBrand?.brand,
+    catalogType: selectedType?.type,
+  };
+
   useEffect(() => {
     const redirectURL = localStorage.getItem(REDIRECT_URL);
     if (redirectURL) {
@@ -38,14 +48,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   }, []);
 
   useEffect(() => {
-    dispatch(
-      getCatalogItems({
-        page: paginationState.activePage - 1,
-        size: 6,
-        sort: `${paginationState.sort},${paginationState.order}`,
-        catalogBrand: selectedBrand?.brand,
-      })
-    );
+    dispatch(getCatalogItems(catalogItemsQueryParams));
   }, [paginationState]);
 
   const handlePagination = currentPage =>
@@ -58,16 +61,13 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     dispatch(selectBrand(id));
   };
 
+  const typeSelection = id => {
+    dispatch(selectType(id));
+  };
+
   useEffect(() => {
-    dispatch(
-      getCatalogItems({
-        page: paginationState.activePage - 1,
-        size: 6,
-        sort: `${paginationState.sort},${paginationState.order}`,
-        catalogBrand: selectedBrand?.brand,
-      })
-    );
-  }, [selectedBrand]);
+    dispatch(getCatalogItems(catalogItemsQueryParams));
+  }, [selectedBrand, selectedType]);
 
   return (
     <div>
@@ -83,7 +83,13 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
           >
             {catalogBrands ? catalogBrands.map(brand => <Option key={brand.id}>{brand.brand}</Option>) : null}
           </Select>
-          <Select className="select-filter" mode="multiple" allowClear placeholder="Type">
+          <Select
+            className="select-filter"
+            allowClear
+            placeholder="Type"
+            onSelect={(id, option) => typeSelection(id)}
+            onClear={() => typeSelection(null)}
+          >
             {catalogTypes ? catalogTypes.map(type => <Option key={type.id}>{type.type}</Option>) : null}
           </Select>
         </Space>

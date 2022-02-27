@@ -15,5 +15,6 @@ export const APP_WHOLE_NUMBER_FORMAT = '0,0';
 export const APP_TWO_DIGITS_AFTER_POINT_NUMBER_FORMAT = '0,0.[00]';
 
 export const ACTIONS = {
-  SELECT: 'Select',
+  SELECT_BRAND: 'Select_Brand',
+  SELECT_TYPE: 'Select_Type',
 };

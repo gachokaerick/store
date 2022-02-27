@@ -77,7 +77,7 @@ export const deleteEntity = createAsyncThunk(
 );
 
 export const selectBrand = (entityId: number) => {
-  return { type: ACTIONS.SELECT, payload: entityId };
+  return { type: ACTIONS.SELECT_BRAND, payload: entityId };
 };
 
 // slice
@@ -96,7 +96,9 @@ export const CatalogBrandSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addCase(ACTIONS.SELECT, (state, action: AnyAction) => {
+      .addCase(ACTIONS.SELECT_BRAND, (state, action: AnyAction) => {
+        // eslint-disable-next-line no-console
+        console.log('brand payload: ', action.payload);
         if (action.payload) {
           state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
         } else {

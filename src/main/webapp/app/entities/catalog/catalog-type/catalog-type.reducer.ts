@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { ICatalogType, defaultValue } from 'app/shared/model/catalog/catalog-type.model';
+import { ACTIONS } from 'app/config/constants';
 
 const initialState: EntityState<ICatalogType> = {
   loading: false,
@@ -13,6 +14,7 @@ const initialState: EntityState<ICatalogType> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  selectedItem: defaultValue,
 };
 
 const apiUrl = 'services/catalog/api/catalog-types';
@@ -74,6 +76,10 @@ export const deleteEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const selectType = (entityId: number) => {
+  return { type: ACTIONS.SELECT_TYPE, payload: entityId };
+};
+
 // slice
 
 export const CatalogTypeSlice = createEntitySlice({
@@ -89,6 +95,15 @@ export const CatalogTypeSlice = createEntitySlice({
         state.updating = false;
         state.updateSuccess = true;
         state.entity = {};
+      })
+      .addCase(ACTIONS.SELECT_TYPE, (state, action: AnyAction) => {
+        // eslint-disable-next-line no-console
+        console.log('type payload: ', action.payload);
+        if (action.payload) {
+          state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
+        } else {
+          state.selectedItem = defaultValue;
+        }
       })
       .addMatcher(isFulfilled(getEntities), (state, action) => {
         return {
