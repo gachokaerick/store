@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { ICatalogBrand, defaultValue } from 'app/shared/model/catalog/catalog-brand.model';
+import { ACTIONS } from 'app/config/constants';
+import { Action } from 'redux';
 
 const initialState: EntityState<ICatalogBrand> = {
   loading: false,
@@ -13,6 +15,7 @@ const initialState: EntityState<ICatalogBrand> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  selectedItems: [],
 };
 
 const apiUrl = 'services/catalog/api/catalog-brands';
@@ -74,6 +77,14 @@ export const deleteEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const selectBrand = (entityId: number, selected: boolean) => {
+  if (selected) {
+    return { type: ACTIONS.SELECT, payload: entityId };
+  } else {
+    return { type: ACTIONS.DESELECT, payload: entityId };
+  }
+};
+
 // slice
 
 export const CatalogBrandSlice = createEntitySlice({
@@ -89,6 +100,14 @@ export const CatalogBrandSlice = createEntitySlice({
         state.updating = false;
         state.updateSuccess = true;
         state.entity = {};
+      })
+      .addCase(ACTIONS.SELECT, (state, action: AnyAction) => {
+        const brand: ICatalogBrand = state.entities.filter(it => it.id.toString() === action.payload)[0];
+        state.selectedItems = [...state.selectedItems, brand];
+      })
+      .addCase(ACTIONS.DESELECT, (state, action: AnyAction) => {
+        const brand: ICatalogBrand = state.entities.filter(it => it.id.toString() === action.payload)[0];
+        state.selectedItems = state.selectedItems.filter(it => it.id !== brand.id);
       })
       .addMatcher(isFulfilled(getEntities), (state, action) => {
         return {

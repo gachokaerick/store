@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import React, { useEffect, useState } from 'react';
 import { REDIRECT_URL } from 'app/shared/util/url-utils';
 import { Button, Col, Image, Row, Select, Space, Typography } from 'antd';
-import { getEntities as getCatalogBrands } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
+import { getEntities as getCatalogBrands, selectBrand } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
 import { getEntities as getCatalogTypes } from 'app/entities/catalog/catalog-type/catalog-type.reducer';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
@@ -19,6 +19,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const catalogTypes = useAppSelector(state => state.catalogType.entities);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
   const totalItems = useAppSelector(state => state.catalogItem.totalItems);
+  const selectedBrands = useAppSelector(state => state.catalogBrand.selectedItems);
 
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, 6, 'id'), props.location.search)
@@ -52,12 +53,23 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
       activePage: currentPage,
     });
 
+  const brandSelection = (id, selected: boolean) => {
+    dispatch(selectBrand(id, selected));
+  };
+
   return (
     <div>
       <section className={'landing-hero'} />
       <section className={'catalog-filters'}>
         <Space size={'small'} className={'h-100 container'}>
-          <Select className="select-filter" mode="multiple" allowClear placeholder="Brand">
+          <Select
+            className="select-filter"
+            mode="multiple"
+            allowClear
+            placeholder="Brand"
+            onSelect={(id, option) => brandSelection(id, true)}
+            onDeselect={(id, option) => brandSelection(id, false)}
+          >
             {catalogBrands ? catalogBrands.map(brand => <Option key={brand.id}>{brand.brand}</Option>) : null}
           </Select>
           <Select className="select-filter" mode="multiple" allowClear placeholder="Type">
@@ -67,10 +79,10 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
       </section>
 
       <section>
-        <Row gutter={16} justify={'center'} className={'mt-4'}>
+        <Row gutter={16} justify={'center'}>
           {catalogItems
             ? catalogItems.map(item => (
-                <Col span={8} key={item.id}>
+                <Col span={8} key={item.id} className={'mt-4'}>
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
                       <Image className={'catalog-image'} src={item.pictureUrl} />
