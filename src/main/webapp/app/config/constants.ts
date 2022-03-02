@@ -17,4 +17,6 @@ export const APP_TWO_DIGITS_AFTER_POINT_NUMBER_FORMAT = '0,0.[00]';
 export const ACTIONS = {
   SELECT_BRAND: 'Select_Brand',
   SELECT_TYPE: 'Select_Type',
+  ADD_TO_CART: 'Add_To_Cart',
+  REMOVE_FROM_CART: 'Remove_From_Cart',
 };

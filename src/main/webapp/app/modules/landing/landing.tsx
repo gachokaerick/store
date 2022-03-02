@@ -9,6 +9,9 @@ import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-ite
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { RouteComponentProps } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
+import { addItemToCart } from 'app/modules/cart/cart.reducer';
 
 export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const { Text } = Typography;
@@ -21,6 +24,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const totalItems = useAppSelector(state => state.catalogItem.totalItems);
   const selectedBrand = useAppSelector(state => state.catalogBrand.selectedItem);
   const selectedType = useAppSelector(state => state.catalogType.selectedItem);
+  const cart = useAppSelector(state => state.cart.items);
 
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, 6, 'id'), props.location.search)
@@ -33,6 +37,8 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     catalogBrand: selectedBrand?.brand,
     catalogType: selectedType?.type,
   };
+
+  const [cookies, setCookie, removeCookie] = useCookies(['cart']);
 
   useEffect(() => {
     const redirectURL = localStorage.getItem(REDIRECT_URL);
@@ -69,6 +75,18 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     dispatch(getCatalogItems(catalogItemsQueryParams));
   }, [selectedBrand, selectedType]);
 
+  useEffect(() => {
+    // set cart to cookies
+    // eslint-disable-next-line no-console
+    console.log('cart: ', cart);
+  }, [cart]);
+
+  const addToCart = (item: ICatalogItem) => {
+    // eslint-disable-next-line no-console
+    console.log('add to cart: ', item);
+    dispatch(addItemToCart(item));
+  };
+
   return (
     <div>
       <section className={'landing-hero'} />
@@ -103,7 +121,9 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
                       <Image className={'catalog-image'} src={item.pictureUrl} />
-                      <Button type={'primary'}>Add To Cart</Button>
+                      <Button type={'primary'} onClick={event => addToCart(item)}>
+                        Add To Cart
+                      </Button>
                       <Text>{item.name}</Text>
                       <Text strong>${item.price}</Text>
                     </Space>

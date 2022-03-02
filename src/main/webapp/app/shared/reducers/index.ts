@@ -28,6 +28,8 @@ import catalogBrand from 'app/entities/catalog/catalog-brand/catalog-brand.reduc
 import basketItem from 'app/entities/basket/basket-item/basket-item.reducer';
 // prettier-ignore
 import basketCheckout from 'app/entities/basket/basket-checkout/basket-checkout.reducer';
+// prettier-ignore
+import cart from 'app/modules/cart/cart.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer = {
@@ -49,6 +51,7 @@ const rootReducer = {
   basketCheckout,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar,
+  cart,
 };
 
 export default rootReducer;

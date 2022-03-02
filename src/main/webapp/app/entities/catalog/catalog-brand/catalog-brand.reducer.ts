@@ -97,8 +97,6 @@ export const CatalogBrandSlice = createEntitySlice({
         state.entity = {};
       })
       .addCase(ACTIONS.SELECT_BRAND, (state, action: AnyAction) => {
-        // eslint-disable-next-line no-console
-        console.log('brand payload: ', action.payload);
         if (action.payload) {
           state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
         } else {

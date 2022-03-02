@@ -10,6 +10,7 @@ import { clearAuthentication } from './shared/reducers/authentication';
 import ErrorBoundary from './shared/error/error-boundary';
 import AppComponent from './app';
 import { loadIcons } from './config/icon-loader';
+import { CookiesProvider } from 'react-cookie';
 
 const store = getStore();
 registerLocale(store);
@@ -26,9 +27,11 @@ const render = Component =>
   ReactDOM.render(
     <ErrorBoundary>
       <Provider store={store}>
-        <div>
-          <Component />
-        </div>
+        <CookiesProvider>
+          <div>
+            <Component />
+          </div>
+        </CookiesProvider>
       </Provider>
     </ErrorBoundary>,
     rootEl

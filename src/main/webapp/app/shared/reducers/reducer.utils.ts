@@ -1,7 +1,7 @@
 import {
+  ActionReducerMapBuilder,
   AnyAction,
   AsyncThunk,
-  ActionReducerMapBuilder,
   createSlice,
   SerializedError,
   SliceCaseReducers,
@@ -112,7 +112,7 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
       extraReducers(builder);
       /*
        * Common rejection logic is handled here.
-       * If you want to add your own rejcetion logic, pass `skipRejectionHandling: true`
+       * If you want to add your own rejection logic, pass `skipRejectionHandling: true`
        * while calling `createEntitySlice`
        * */
       if (!skipRejectionHandling) {

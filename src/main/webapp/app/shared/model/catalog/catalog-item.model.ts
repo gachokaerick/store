@@ -14,6 +14,7 @@ export interface ICatalogItem {
   onReorder?: boolean | null;
   catalogBrand?: ICatalogBrand;
   catalogType?: ICatalogType;
+  previousPrice?: number;
 }
 
 export const defaultValue: Readonly<ICatalogItem> = {
