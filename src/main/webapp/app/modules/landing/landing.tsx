@@ -11,7 +11,7 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { RouteComponentProps } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
-import { addItemToCart } from 'app/modules/cart/cart.reducer';
+import { addItemToCart, setCartItems } from 'app/modules/cart/cart.reducer';
 
 export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const { Text } = Typography;
@@ -51,6 +51,9 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   useEffect(() => {
     dispatch(getCatalogBrands({}));
     dispatch(getCatalogTypes({}));
+    // // eslint-disable-next-line no-console
+    // console.log('cookies: ', cookies.cart)
+    // dispatch(setCart(cookies.cart))
   }, []);
 
   useEffect(() => {
@@ -77,13 +80,14 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
 
   useEffect(() => {
     // set cart to cookies
-    // eslint-disable-next-line no-console
-    console.log('cart: ', cart);
+    if (cart.length === 0) {
+      dispatch(setCartItems(cookies.cart));
+    } else {
+      setCookie('cart', cart, { path: '/', maxAge: 60 * 60 * 24 * 30 });
+    }
   }, [cart]);
 
   const addToCart = (item: ICatalogItem) => {
-    // eslint-disable-next-line no-console
-    console.log('add to cart: ', item);
     dispatch(addItemToCart(item));
   };
 
@@ -121,8 +125,8 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
                       <Image className={'catalog-image'} src={item.pictureUrl} />
-                      <Button type={'primary'} onClick={event => addToCart(item)}>
-                        Add To Cart
+                      <Button type={'primary'} disabled={cart.filter(it => it.id === item.id).length !== 0} onClick={() => addToCart(item)}>
+                        {cart.filter(it => it.id === item.id).length !== 0 ? 'Added to Cart' : 'Add to Cart'}
                       </Button>
                       <Text>{item.name}</Text>
                       <Text strong>${item.price}</Text>

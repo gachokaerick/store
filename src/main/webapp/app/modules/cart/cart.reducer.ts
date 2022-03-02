@@ -1,6 +1,5 @@
 import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { ACTIONS } from 'app/config/constants';
-import { createEntitySlice } from 'app/shared/reducers/reducer.utils';
 import { ActionReducerMapBuilder, AnyAction, createSlice } from '@reduxjs/toolkit';
 
 interface CartState<T> {
@@ -21,6 +20,10 @@ export const removeItemFromCart = (item: ICatalogItem) => {
   return { type: ACTIONS.REMOVE_FROM_CART, payload: item };
 };
 
+export const setCartItems = (items: ReadonlyArray<ICatalogItem>) => {
+  return { type: ACTIONS.SET_CART, payload: items };
+};
+
 // slice
 
 export const CartSlice = createSlice({
@@ -37,6 +40,11 @@ export const CartSlice = createSlice({
       .addCase(ACTIONS.REMOVE_FROM_CART, (state, action: AnyAction) => {
         if (action.payload) {
           state.items = state.items.filter(it => it.id !== action.payload.id);
+        }
+      })
+      .addCase(ACTIONS.SET_CART, (state, action: AnyAction) => {
+        if (action.payload) {
+          state.items = action.payload;
         }
       });
   },
