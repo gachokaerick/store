@@ -45,6 +45,7 @@ describe('Entities reducer tests', () => {
     });
     expect(isEmpty(state.entities));
     expect(isEmpty(state.entity));
+    expect(isEmpty(state.selectedItem));
   }
 
   function testMultipleTypes(types, payload, testFunction, error?) {

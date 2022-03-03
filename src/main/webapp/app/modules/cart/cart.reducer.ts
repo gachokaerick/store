@@ -2,7 +2,7 @@ import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { ACTIONS } from 'app/config/constants';
 import { ActionReducerMapBuilder, AnyAction, createSlice } from '@reduxjs/toolkit';
 
-interface CartState<T> {
+export interface CartState<T> {
   items: ReadonlyArray<T>;
 }
 
