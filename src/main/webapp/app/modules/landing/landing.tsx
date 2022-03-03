@@ -11,7 +11,8 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { RouteComponentProps } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
-import { addItemToCart, setCartItems } from 'app/modules/cart/cart.reducer';
+import { addItemToCart, removeItemFromCart, setCartItems } from 'app/modules/cart/cart.reducer';
+import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   const { Text } = Typography;
@@ -38,7 +39,7 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     catalogType: selectedType?.type,
   };
 
-  const [cookies, setCookie, removeCookie] = useCookies(['cart']);
+  const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
     const redirectURL = localStorage.getItem(REDIRECT_URL);
@@ -51,9 +52,6 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   useEffect(() => {
     dispatch(getCatalogBrands({}));
     dispatch(getCatalogTypes({}));
-    // // eslint-disable-next-line no-console
-    // console.log('cookies: ', cookies.cart)
-    // dispatch(setCart(cookies.cart))
   }, []);
 
   useEffect(() => {
@@ -91,6 +89,14 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     dispatch(addItemToCart(item));
   };
 
+  const removeFromCart = (item: ICatalogItem) => {
+    dispatch(removeItemFromCart(item));
+  };
+
+  const itemIsInCart = (item: ICatalogItem): boolean => {
+    return cart.filter(it => it.id === item.id).length === 1;
+  };
+
   return (
     <div>
       <section className={'landing-hero'} />
@@ -125,8 +131,11 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
                       <Image className={'catalog-image'} src={item.pictureUrl} />
-                      <Button type={'primary'} disabled={cart.filter(it => it.id === item.id).length !== 0} onClick={() => addToCart(item)}>
-                        {cart.filter(it => it.id === item.id).length !== 0 ? 'Added to Cart' : 'Add to Cart'}
+                      <Button type={'primary'} hidden={itemIsInCart(item)} icon={<PlusOutlined />} onClick={() => addToCart(item)}>
+                        Add to Cart
+                      </Button>
+                      <Button danger hidden={!itemIsInCart(item)} icon={<CloseOutlined />} onClick={() => removeFromCart(item)}>
+                        Remove from Cart
                       </Button>
                       <Text>{item.name}</Text>
                       <Text strong>${item.price}</Text>
