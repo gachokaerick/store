@@ -5,28 +5,25 @@ import 'app/config/dayjs.ts';
 import React, { useEffect } from 'react';
 import { Card } from 'reactstrap';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getSession } from 'app/shared/reducers/authentication';
 import { getProfile } from 'app/shared/reducers/application-profile';
-import { setLocale } from 'app/shared/reducers/locale';
 import Header from 'app/shared/layout/header/header';
 import Footer from 'app/shared/layout/footer/footer';
 import { hasAnyAuthority } from 'app/shared/auth/private-route';
 import ErrorBoundary from 'app/shared/error/error-boundary';
 import { AUTHORITIES } from 'app/config/constants';
 import AppRoutes from 'app/routes';
+import { setCartItems } from 'app/modules/cart/cart.reducer';
+import { useCookies } from 'react-cookie';
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '');
 
 export const App = () => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getSession());
-    dispatch(getProfile());
-  }, []);
+  const [cookies, setCookie] = useCookies(['cart']);
 
   const currentLocale = useAppSelector(state => state.locale.currentLocale);
   const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
@@ -35,6 +32,20 @@ export const App = () => {
   const isInProduction = useAppSelector(state => state.applicationProfile.inProduction);
   const isOpenAPIEnabled = useAppSelector(state => state.applicationProfile.isOpenAPIEnabled);
   const cart = useAppSelector(state => state.cart.items);
+
+  useEffect(() => {
+    dispatch(getSession());
+    dispatch(getProfile());
+  }, []);
+
+  useEffect(() => {
+    // set cart to cookies
+    if (cart.length === 0) {
+      dispatch(setCartItems(cookies.cart));
+    } else {
+      setCookie('cart', cart, { path: '/', maxAge: 60 * 60 * 24 * 30 });
+    }
+  }, [cart]);
 
   const paddingTop = '60px';
   return (

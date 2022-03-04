@@ -9,9 +9,8 @@ import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-ite
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { RouteComponentProps } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
-import { addItemToCart, removeItemFromCart, setCartItems } from 'app/modules/cart/cart.reducer';
+import { addItemToCart, removeItemFromCart } from 'app/modules/cart/cart.reducer';
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 
 export const Landing = (props: RouteComponentProps<{ url: string }>) => {
@@ -38,8 +37,6 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     catalogBrand: selectedBrand?.brand,
     catalogType: selectedType?.type,
   };
-
-  const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
     const redirectURL = localStorage.getItem(REDIRECT_URL);
@@ -75,15 +72,6 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
   useEffect(() => {
     dispatch(getCatalogItems(catalogItemsQueryParams));
   }, [selectedBrand, selectedType]);
-
-  useEffect(() => {
-    // set cart to cookies
-    if (cart.length === 0) {
-      dispatch(setCartItems(cookies.cart));
-    } else {
-      setCookie('cart', cart, { path: '/', maxAge: 60 * 60 * 24 * 30 });
-    }
-  }, [cart]);
 
   const addToCart = (item: ICatalogItem) => {
     dispatch(addItemToCart(item));

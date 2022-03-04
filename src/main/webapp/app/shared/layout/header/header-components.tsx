@@ -36,7 +36,7 @@ export const Home = () => (
 
 export const Cart = props => (
   <NavItem>
-    <NavLink tag={Link} to={'/'} className="d-flex align-items-center">
+    <NavLink tag={Link} to={'/cart'} className="d-flex align-items-center">
       <Badge count={props.cartItemsCount} status="success">
         <FontAwesomeIcon icon={faShoppingCart} />
       </Badge>

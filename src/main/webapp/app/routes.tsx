@@ -11,6 +11,7 @@ import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import Landing from 'app/modules/landing/landing';
+import Cart from 'app/modules/cart/cart';
 
 const Admin = Loadable({
   loader: () => import(/* webpackChunkName: "administration" */ 'app/modules/administration'),
@@ -24,6 +25,7 @@ const Routes = () => {
         <ErrorBoundaryRoute path="/logout" component={Logout} />
         <PrivateRoute path="/admin" component={Admin} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
         <ErrorBoundaryRoute path="/" exact component={Landing} />
+        <ErrorBoundaryRoute path="/cart" exact component={Cart} />
         <ErrorBoundaryRoute path="/oauth2/authorization/oidc" component={LoginRedirect} />
         <PrivateRoute path="/" component={Entities} hasAnyAuthorities={[AUTHORITIES.USER]} />
         <ErrorBoundaryRoute component={PageNotFound} />
