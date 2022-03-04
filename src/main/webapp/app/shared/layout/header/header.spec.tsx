@@ -16,6 +16,7 @@ describe('Header', () => {
     ribbonEnv: 'dev',
     isInProduction: false,
     isOpenAPIEnabled: true,
+    cart: [],
   };
   const prodProps = {
     ...devProps,

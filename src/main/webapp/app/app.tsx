@@ -34,6 +34,7 @@ export const App = () => {
   const ribbonEnv = useAppSelector(state => state.applicationProfile.ribbonEnv);
   const isInProduction = useAppSelector(state => state.applicationProfile.inProduction);
   const isOpenAPIEnabled = useAppSelector(state => state.applicationProfile.isOpenAPIEnabled);
+  const cart = useAppSelector(state => state.cart.items);
 
   const paddingTop = '60px';
   return (
@@ -48,6 +49,7 @@ export const App = () => {
             ribbonEnv={ribbonEnv}
             isInProduction={isInProduction}
             isOpenAPIEnabled={isOpenAPIEnabled}
+            cart={cart}
           />
         </ErrorBoundary>
         <div className="container-fluid view-container" id="app-view-container">
