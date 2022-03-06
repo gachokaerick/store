@@ -1,12 +1,7 @@
-import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
-import reducer, { addItemToCart, CartState, removeItemFromCart, setCartItems } from 'app/modules/cart/cart.reducer';
+import { ICartCatalogItem } from 'app/shared/model/catalog/catalog-item.model';
+import reducer, { addItemToCart, CartState, reduceFromCart, removeItemFromCart, setCartItems } from 'app/modules/cart/cart.reducer';
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { ACTIONS } from 'app/config/constants';
-
-const initialState: CartState<ICatalogItem> = {
-  items: [],
-};
 
 describe('Cart reducer tests', () => {
   function isEmpty(element): boolean {
@@ -58,18 +53,38 @@ describe('Cart reducer tests', () => {
         payload: {},
       });
     });
+
+    it('dispatches REDUCE_FROM_CART action', () => {
+      store.dispatch(reduceFromCart({}, 2));
+      expect(store.getActions()[0]).toMatchObject({
+        type: ACTIONS.REDUCE_FROM_CART,
+        payload: {},
+      });
+    });
   });
 
   describe('Successes', () => {
     it('should add item to cart', () => {
-      const payload = { id: 1 };
+      const payload = { id: 1, price: 12 };
       expect(
         reducer(undefined, {
           type: ACTIONS.ADD_TO_CART,
           payload,
         })
       ).toEqual({
-        items: [...initialState.items, payload],
+        items: [{ id: 1, price: 12, quantity: 1 }],
+      });
+    });
+
+    it('should reduce item from cart', () => {
+      const payload = { item: { id: 1 }, quantity: 1 };
+      expect(
+        reducer(undefined, {
+          type: ACTIONS.REDUCE_FROM_CART,
+          payload,
+        })
+      ).toEqual({
+        items: [],
       });
     });
 
@@ -81,19 +96,19 @@ describe('Cart reducer tests', () => {
           payload,
         })
       ).toEqual({
-        items: [...initialState.items],
+        items: [],
       });
     });
 
     it('should set cart', () => {
-      const payload = [{ id: 1 }];
+      const payload = [{ id: 1, price: 10, quantity: 1 }];
       expect(
         reducer(undefined, {
           type: ACTIONS.SET_CART,
           payload,
         })
       ).toEqual({
-        items: payload,
+        items: [{ id: 1, price: 10, quantity: 1 }],
       });
     });
   });

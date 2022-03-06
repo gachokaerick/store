@@ -5,7 +5,7 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 import initStore from 'app/config/store';
-import Header from './header';
+import Header, { countCartItems } from './header';
 
 describe('Header', () => {
   let mountedWrapper;
@@ -16,7 +16,11 @@ describe('Header', () => {
     ribbonEnv: 'dev',
     isInProduction: false,
     isOpenAPIEnabled: true,
-    cart: [],
+    cart: [
+      { id: 1, price: 23, quantity: 2 },
+      { id: 2, price: 12, quantity: 3 },
+      { id: 3, price: 3, quantity: 1 },
+    ],
   };
   const prodProps = {
     ...devProps,
@@ -109,5 +113,9 @@ describe('Header', () => {
     expect(html).not.toContain('entity-menu');
     // Find AccountMenu component
     expect(html).toContain('account-menu');
+  });
+
+  it('Calculates cart items count correctly', () => {
+    expect(countCartItems(devProps.cart)).toEqual(6);
   });
 });

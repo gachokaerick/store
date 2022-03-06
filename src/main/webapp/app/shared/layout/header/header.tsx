@@ -9,7 +9,7 @@ import { Home, Brand, Cart } from './header-components';
 import { AdminMenu, EntitiesMenu, AccountMenu, LocaleMenu } from '../menus';
 import { useAppDispatch } from 'app/config/store';
 import { setLocale } from 'app/shared/reducers/locale';
-import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
+import { ICartCatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -18,8 +18,13 @@ export interface IHeaderProps {
   isInProduction: boolean;
   isOpenAPIEnabled: boolean;
   currentLocale: string;
-  cart: ReadonlyArray<ICatalogItem>;
+  cart: ReadonlyArray<ICartCatalogItem>;
 }
+
+export const countCartItems = (items: ReadonlyArray<ICartCatalogItem>) =>
+  items.reduce((count, item) => {
+    return count + item.quantity;
+  }, 0);
 
 const Header = (props: IHeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,7 +60,7 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ml-auto" navbar>
             <Home />
-            <Cart cartItemsCount={props.cart.length} />
+            <Cart cartItemsCount={countCartItems(props.cart)} />
             {props.isAuthenticated && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI={props.isOpenAPIEnabled} />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />

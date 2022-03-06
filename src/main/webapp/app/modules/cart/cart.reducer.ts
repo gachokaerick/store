@@ -1,4 +1,4 @@
-import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
+import { ICartCatalogItem, ICatalogItem, itemToCartItem } from 'app/shared/model/catalog/catalog-item.model';
 import { ACTIONS } from 'app/config/constants';
 import { ActionReducerMapBuilder, AnyAction, createSlice } from '@reduxjs/toolkit';
 
@@ -6,7 +6,7 @@ export interface CartState<T> {
   items: ReadonlyArray<T>;
 }
 
-const initialState: CartState<ICatalogItem> = {
+const initialState: CartState<ICartCatalogItem> = {
   items: [],
 };
 
@@ -20,7 +20,11 @@ export const removeItemFromCart = (item: ICatalogItem) => {
   return { type: ACTIONS.REMOVE_FROM_CART, payload: item };
 };
 
-export const setCartItems = (items: ReadonlyArray<ICatalogItem>) => {
+export const reduceFromCart = (item: ICatalogItem, quantity = 1) => {
+  return { type: ACTIONS.REDUCE_FROM_CART, payload: { item, quantity } };
+};
+
+export const setCartItems = (items: ReadonlyArray<ICartCatalogItem>) => {
   return { type: ACTIONS.SET_CART, payload: items };
 };
 
@@ -30,16 +34,32 @@ export const CartSlice = createSlice({
   name: 'Cart',
   initialState,
   reducers: {},
-  extraReducers(builder: ActionReducerMapBuilder<CartState<ICatalogItem>>) {
+  extraReducers(builder: ActionReducerMapBuilder<CartState<ICartCatalogItem>>) {
     builder
       .addCase(ACTIONS.ADD_TO_CART, (state, action: AnyAction) => {
         if (action.payload) {
-          state.items.filter(it => it.id === action.payload.id).length === 0 ? (state.items = [...state.items, action.payload]) : null;
+          const payloadItem: ICartCatalogItem = itemToCartItem(action.payload);
+          const match = state.items.filter(it => it.id === payloadItem.id);
+          if (match.length === 0) {
+            state.items = [...state.items, payloadItem];
+          } else {
+            state.items = state.items.map(item => (item.id === payloadItem.id ? { ...item, quantity: item.quantity + 1 } : item));
+          }
         }
       })
       .addCase(ACTIONS.REMOVE_FROM_CART, (state, action: AnyAction) => {
         if (action.payload) {
-          state.items = state.items.filter(it => it.id !== action.payload.id);
+          const item: ICatalogItem = action.payload;
+          state.items = state.items.filter(it => it.id !== item.id);
+        }
+      })
+      .addCase(ACTIONS.REDUCE_FROM_CART, (state, action: AnyAction) => {
+        if (action.payload) {
+          const payloadItem: ICatalogItem = action.payload.item;
+          const payloadQuantity: number = action.payload.quantity;
+          state.items = state.items.map(item =>
+            item.id === payloadItem.id ? { ...item, quantity: item.quantity - payloadQuantity } : item
+          );
         }
       })
       .addCase(ACTIONS.SET_CART, (state, action: AnyAction) => {

@@ -14,9 +14,22 @@ export interface ICatalogItem {
   onReorder?: boolean | null;
   catalogBrand?: ICatalogBrand;
   catalogType?: ICatalogType;
-  previousPrice?: number;
+}
+
+export interface ICartCatalogItem {
+  id: number;
+  price: number;
+  quantity: number;
 }
 
 export const defaultValue: Readonly<ICatalogItem> = {
   onReorder: false,
+};
+
+export const itemToCartItem = (item: ICatalogItem): ICartCatalogItem => {
+  return {
+    id: item.id,
+    price: item.price,
+    quantity: 1,
+  };
 };

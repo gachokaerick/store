@@ -19,5 +19,6 @@ export const ACTIONS = {
   SELECT_TYPE: 'Select_Type',
   ADD_TO_CART: 'Add_To_Cart',
   REMOVE_FROM_CART: 'Remove_From_Cart',
+  REDUCE_FROM_CART: 'Reduce_From_Cart',
   SET_CART: 'Set_Cart',
 };
