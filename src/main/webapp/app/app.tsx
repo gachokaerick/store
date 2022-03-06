@@ -36,15 +36,11 @@ export const App = () => {
   useEffect(() => {
     dispatch(getSession());
     dispatch(getProfile());
+    dispatch(setCartItems(cookies.cart));
   }, []);
 
   useEffect(() => {
-    // set cart to cookies
-    if (cart.length === 0) {
-      dispatch(setCartItems(cookies.cart));
-    } else {
-      setCookie('cart', cart, { path: '/', maxAge: 60 * 60 * 24 * 30 });
-    }
+    setCookie('cart', cart, { path: '/', maxAge: 60 * 60 * 24 * 30 });
   }, [cart]);
 
   const paddingTop = '60px';
