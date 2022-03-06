@@ -7,7 +7,7 @@ import { getEntities as getCatalogBrands, selectBrand } from 'app/entities/catal
 import { getEntities as getCatalogTypes, selectType } from 'app/entities/catalog/catalog-type/catalog-type.reducer';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 import { getSortState, JhiItemCount, JhiPagination } from 'react-jhipster';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { isIdPresent, overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { RouteComponentProps } from 'react-router-dom';
 import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { addItemToCart, removeItemFromCart } from 'app/modules/cart/cart.reducer';
@@ -81,10 +81,6 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
     dispatch(removeItemFromCart(item));
   };
 
-  const itemIsInCart = (item: ICatalogItem): boolean => {
-    return cart.filter(it => it.id === item.id).length === 1;
-  };
-
   return (
     <div>
       <section className={'landing-hero'} />
@@ -119,10 +115,10 @@ export const Landing = (props: RouteComponentProps<{ url: string }>) => {
                   <Row justify={'center'}>
                     <Space align={'center'} direction={'vertical'}>
                       <Image className={'catalog-image'} src={item.pictureUrl} />
-                      <Button type={'primary'} hidden={itemIsInCart(item)} icon={<PlusOutlined />} onClick={() => addToCart(item)}>
+                      <Button type={'primary'} hidden={isIdPresent(cart, item.id)} icon={<PlusOutlined />} onClick={() => addToCart(item)}>
                         Add to Cart
                       </Button>
-                      <Button danger hidden={!itemIsInCart(item)} icon={<CloseOutlined />} onClick={() => removeFromCart(item)}>
+                      <Button danger hidden={!isIdPresent(cart, item.id)} icon={<CloseOutlined />} onClick={() => removeFromCart(item)}>
                         Remove from Cart
                       </Button>
                       <Text>{item.name}</Text>

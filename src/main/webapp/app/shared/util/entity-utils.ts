@@ -34,3 +34,5 @@ export const overridePaginationStateWithQueryParams = (paginationBaseState: IPag
   }
   return paginationBaseState;
 };
+
+export const isIdPresent = (array: ReadonlyArray<any>, id: number) => array.filter(item => item.id === id).length >= 1;

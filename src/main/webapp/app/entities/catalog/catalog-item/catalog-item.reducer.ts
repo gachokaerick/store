@@ -34,13 +34,16 @@ const apiUrl = 'services/catalog/api/catalog-items';
 
 export const getEntities = createAsyncThunk(
   'catalogItem/fetch_entity_list',
-  async ({ page, size, sort, catalogBrand, catalogType }: CatalogItemsQueryParams) => {
+  async ({ page, size, sort, catalogBrand, catalogType, ids }: CatalogItemsQueryParams) => {
     let requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
     if (catalogBrand) {
       requestUrl = requestUrl + `&catalogBrand=${catalogBrand}`;
     }
     if (catalogType) {
       requestUrl = requestUrl + `&catalogType=${catalogType}`;
+    }
+    if (ids) {
+      requestUrl = requestUrl + `&ids=${ids}`;
     }
     return axios.get<ICatalogItem[]>(requestUrl);
   }
