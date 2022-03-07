@@ -57,9 +57,15 @@ export const CartSlice = createSlice({
         if (action.payload) {
           const payloadItem: ICatalogItem = action.payload.item;
           const payloadQuantity: number = action.payload.quantity;
-          state.items = state.items.map(item =>
-            item.id === payloadItem.id ? { ...item, quantity: item.quantity - payloadQuantity } : item
-          );
+          state.items = state.items
+            .map(item =>
+              item.id === payloadItem.id
+                ? item.quantity - payloadQuantity > 0
+                  ? { ...item, quantity: item.quantity - payloadQuantity }
+                  : null
+                : item
+            )
+            .filter(item => item !== null);
         }
       })
       .addCase(ACTIONS.SET_CART, (state, action: AnyAction) => {

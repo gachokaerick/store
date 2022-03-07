@@ -15,6 +15,11 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('cart: ', cart);
+    // eslint-disable-next-line no-console
+    console.log('catalogItems: ', catalogItems);
+
     if (cart.length > 0 && catalogItems.length !== cart.length) {
       const ids: string = cart.map(item => item.id).join();
       dispatch(getCatalogItems({ ids }));
@@ -34,7 +39,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       ]}
     >
       <Col lg={16} xs={24}>
-        <Card title={`Cart (${catalogItems.length})`} bordered={true}>
+        <Card title={`Cart (${cart.length})`} bordered={true}>
           {catalogItems
             ? catalogItems
                 .filter(item => isIdPresent(cart, item.id))
@@ -59,15 +64,15 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                     </Row>
                     <Row>
                       <Col span={12}>
-                        <Button type={'text'} icon={<DeleteOutlined />} danger onClick={() => removeItemFromCart(item)}>
+                        <Button type={'text'} icon={<DeleteOutlined />} danger onClick={() => dispatch(removeItemFromCart(item))}>
                           Remove
                         </Button>
                       </Col>
                       <Col span={12} className={'text-right'}>
                         <Space direction={'horizontal'}>
-                          <Button type={'primary'} icon={<PlusOutlined />} onClick={() => reduceFromCart(item)} />
+                          <Button type={'primary'} icon={<PlusOutlined />} onClick={() => dispatch(addItemToCart(item))} />
                           <Text>1</Text>
-                          <Button type={'primary'} icon={<MinusOutlined />} onClick={() => addItemToCart(item)} />
+                          <Button type={'primary'} icon={<MinusOutlined />} onClick={() => dispatch(reduceFromCart(item))} />
                         </Space>
                       </Col>
                     </Row>
