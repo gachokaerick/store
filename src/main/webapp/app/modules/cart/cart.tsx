@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Card, Col, Image, Row, Space, Typography } from 'antd';
+import { Button, Card, Col, Divider, Image, Row, Space, Typography } from 'antd';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { RouteComponentProps } from 'react-router-dom';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -13,20 +13,18 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const { Text, Title } = Typography;
   const cart = useAppSelector(state => state.cart.items);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
-  let checkoutTotal = 0;
 
   useEffect(() => {
-    if (cart.length > 0) {
+    if (cart.length > 0 && catalogItems.length !== cart.length) {
       const ids: string = cart.map(item => item.id).join();
       dispatch(getCatalogItems({ ids }));
     }
-  }, []);
+  }, [cart]);
 
-  useEffect(() => {
-    checkoutTotal = catalogItems?.reduce((total, item) => {
+  const getCheckoutTotal = () =>
+    catalogItems?.reduce((total, item) => {
       return total + item.price;
     }, 0);
-  }, [catalogItems]);
 
   return (
     <Row
@@ -40,7 +38,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
           {catalogItems
             ? catalogItems
                 .filter(item => isIdPresent(cart, item.id))
-                .map(item => (
+                .map((item, i, { length }) => (
                   <Space key={item.id} direction={'vertical'} className={'w-100'}>
                     <Row>
                       <Col xs={24} sm={6}>
@@ -73,6 +71,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                         </Space>
                       </Col>
                     </Row>
+                    <Divider className={length - 1 === i ? 'd-none' : ''} />
                   </Space>
                 ))
             : null}
@@ -86,7 +85,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                 <Text>Subtotal</Text>
               </Col>
               <Col span={12} className={'text-md-right'}>
-                <Title level={4}>${checkoutTotal}</Title>
+                <Title level={4}>${getCheckoutTotal()}</Title>
               </Col>
             </Row>
             <Row>
@@ -102,11 +101,11 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                 <Text>Total</Text>
               </Col>
               <Col span={12} className={'text-md-right'}>
-                <Title level={4}>${checkoutTotal}</Title>
+                <Title level={4}>${getCheckoutTotal()}</Title>
               </Col>
             </Row>
             <Button type={'primary'} block>
-              Checkout (${checkoutTotal})
+              Checkout (${getCheckoutTotal()})
             </Button>
           </Space>
         </Card>
