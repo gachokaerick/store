@@ -7,6 +7,7 @@ import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-ite
 import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/cart/cart.reducer';
 import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
+import { REDIRECT_URL } from 'app/shared/util/url-utils';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
@@ -15,11 +16,14 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('cart: ', cart);
-    // eslint-disable-next-line no-console
-    console.log('catalogItems: ', catalogItems);
+    const redirectURL = localStorage.getItem(REDIRECT_URL);
+    if (redirectURL) {
+      localStorage.removeItem(REDIRECT_URL);
+      location.href = `${location.origin}${redirectURL}`;
+    }
+  });
 
+  useEffect(() => {
     if (cart.length > 0 && catalogItems.length !== cart.length) {
       const ids: string = cart.map(item => item.id).join();
       dispatch(getCatalogItems({ ids }));
