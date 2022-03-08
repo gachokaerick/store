@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
 import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/cart/cart.reducer';
-import { ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
+import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
@@ -26,9 +26,28 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
     }
   }, [cart]);
 
+  const getItemFromCartById = (id: number): ICartCatalogItem => {
+    const items = cart?.filter(cartItem => cartItem.id === id);
+    if (items?.length > 0) {
+      return items[0];
+    } else {
+      return null;
+    }
+  };
+
+  const getCatalogItemById = (id: number): ICatalogItem => {
+    const items = catalogItems?.filter(item => item.id === id);
+    if (items?.length > 0) {
+      return items[0];
+    } else {
+      return null;
+    }
+  };
+
   const getCheckoutTotal = () =>
-    catalogItems?.reduce((total, item) => {
-      return total + item.price;
+    cart?.reduce((total, item) => {
+      const catalogItem = getCatalogItemById(item.id);
+      return catalogItem ? total + catalogItem.price * item.quantity : total + item.price * item.quantity;
     }, 0);
 
   return (
@@ -71,7 +90,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                       <Col span={12} className={'text-right'}>
                         <Space direction={'horizontal'}>
                           <Button type={'primary'} icon={<PlusOutlined />} onClick={() => dispatch(addItemToCart(item))} />
-                          <Text>1</Text>
+                          <Text>{getItemFromCartById(item.id)?.quantity}</Text>
                           <Button type={'primary'} icon={<MinusOutlined />} onClick={() => dispatch(reduceFromCart(item))} />
                         </Space>
                       </Col>
