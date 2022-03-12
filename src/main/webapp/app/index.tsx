@@ -10,6 +10,7 @@ import { clearAuthentication } from './shared/reducers/authentication';
 import ErrorBoundary from './shared/error/error-boundary';
 import AppComponent from './app';
 import { loadIcons } from './config/icon-loader';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const store = getStore();
 registerLocale(store);
@@ -21,14 +22,23 @@ loadIcons();
 
 const rootEl = document.getElementById('root');
 
+const paypalOptions = {
+  'client-id': 'test',
+  currency: 'USD',
+  intent: 'capture',
+  'data-client-token': 'abc123xyz==',
+};
+
 const render = Component =>
   // eslint-disable-next-line react/no-render-return-value
   ReactDOM.render(
     <ErrorBoundary>
       <Provider store={store}>
-        <div>
-          <Component />
-        </div>
+        <PayPalScriptProvider options={paypalOptions}>
+          <div>
+            <Component />
+          </div>
+        </PayPalScriptProvider>
       </Provider>
     </ErrorBoundary>,
     rootEl

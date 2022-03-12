@@ -7,21 +7,14 @@ import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-ite
 import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/cart/cart.reducer';
 import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
-import { REDIRECT_URL } from 'app/shared/util/url-utils';
+import { getLoginUrl, REDIRECT_URL } from 'app/shared/util/url-utils';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
   const { Text, Title } = Typography;
   const cart = useAppSelector(state => state.cart.items);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
-
-  useEffect(() => {
-    const redirectURL = localStorage.getItem(REDIRECT_URL);
-    if (redirectURL) {
-      localStorage.removeItem(REDIRECT_URL);
-      location.href = `${location.origin}${redirectURL}`;
-    }
-  });
+  const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
 
   useEffect(() => {
     if (cart.length > 0 && catalogItems.length !== cart.length) {
@@ -53,6 +46,15 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       const catalogItem = getCatalogItemById(item.id);
       return catalogItem ? total + catalogItem.price * item.quantity : total + item.price * item.quantity;
     }, 0);
+
+  const checkout = () => {
+    if (!isAuthenticated) {
+      props.history.push(getLoginUrl());
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('paypal checkout');
+    }
+  };
 
   return (
     <Row
@@ -132,8 +134,8 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                 <Title level={4}>${getCheckoutTotal()}</Title>
               </Col>
             </Row>
-            <Button type={'primary'} block>
-              Checkout (${getCheckoutTotal()})
+            <Button type={'primary'} className={'font-weight-bold'} block onClick={() => checkout()}>
+              CHECKOUT (${getCheckoutTotal()})
             </Button>
           </Space>
         </Card>
