@@ -23,10 +23,9 @@ loadIcons();
 const rootEl = document.getElementById('root');
 
 const paypalOptions = {
-  'client-id': 'test',
+  'client-id': CUSTOM_ENV.PAYPAL_CLIENT_ID,
   currency: 'USD',
   intent: 'capture',
-  'data-client-token': 'abc123xyz==',
 };
 
 const render = Component =>

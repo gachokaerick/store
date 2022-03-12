@@ -39,6 +39,12 @@ module.exports = async options => {
     encoding: 'hex',
     files: { include: ['*.json'] },
   });
+  const fileEnv = utils.getFileEnv(options.env);
+  // reduce it to a nice object, the same as before (but with the variables from the file)
+  const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
+    prev[next] = JSON.stringify(fileEnv[next]);
+    return prev;
+  }, {});
 
   return merge(
     {
@@ -77,7 +83,7 @@ module.exports = async options => {
           /*
        ,
        Disabled due to https://github.com/jhipster/generator-jhipster/issues/16116
-       Can be enabled with @reduxjs/toolkit@>1.6.1 
+       Can be enabled with @reduxjs/toolkit@>1.6.1
       {
         enforce: 'pre',
         test: /\.jsx?$/,
@@ -110,6 +116,7 @@ module.exports = async options => {
           DEVELOPMENT: JSON.stringify(development),
           VERSION: JSON.stringify(environment.VERSION),
           SERVER_API_URL: JSON.stringify(environment.SERVER_API_URL),
+          CUSTOM_ENV: envKeys,
         }),
         new ESLintPlugin({
           extensions: ['js', 'ts', 'jsx', 'tsx'],

@@ -1,10 +1,13 @@
 const path = require('path');
 
 const tsconfig = require('../tsconfig.json');
+const fs = require('fs');
+const dotenv = require('dotenv');
 
 module.exports = {
   root,
   mapTypescriptAliasToWebpackAlias,
+  getFileEnv,
 };
 
 const _root = path.resolve(__dirname, '..');
@@ -36,4 +39,21 @@ function mapTypescriptAliasToWebpackAlias(alias = {}) {
       return aliases;
     }, webpackAliases);
   return webpackAliases;
+}
+
+function getFileEnv(environment) {
+  // Get the root path (assuming your webpack config is in the root of your project!)
+  const currentPath = path.join(__dirname);
+
+  // Create the fallback path (the production .env)
+  const basePath = currentPath + '/.env';
+
+  // We're concatenating the environment name to our filename to specify the correct env file!
+  const envPath = basePath + '.' + environment;
+
+  // Check if the file exists, otherwise fall back to the production .env
+  const finalPath = fs.existsSync(envPath) ? envPath : basePath;
+
+  // Set the path parameter in the dotenv config
+  return dotenv.config({ path: finalPath }).parsed;
 }

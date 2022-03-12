@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Card, Col, Divider, Image, Row, Space, Typography } from 'antd';
+import { Button, Card, Col, Divider, Image, Row, Space, Spin, Typography } from 'antd';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { RouteComponentProps } from 'react-router-dom';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -8,6 +8,7 @@ import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/c
 import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
 import { getLoginUrl, REDIRECT_URL } from 'app/shared/util/url-utils';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const cart = useAppSelector(state => state.cart.items);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
   const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
+  const [{ isPending }] = usePayPalScriptReducer();
 
   useEffect(() => {
     if (cart.length > 0 && catalogItems.length !== cart.length) {
@@ -46,15 +48,6 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       const catalogItem = getCatalogItemById(item.id);
       return catalogItem ? total + catalogItem.price * item.quantity : total + item.price * item.quantity;
     }, 0);
-
-  const checkout = () => {
-    if (!isAuthenticated) {
-      props.history.push(getLoginUrl());
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('paypal checkout');
-    }
-  };
 
   return (
     <Row
@@ -134,9 +127,16 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                 <Title level={4}>${getCheckoutTotal()}</Title>
               </Col>
             </Row>
-            <Button type={'primary'} className={'font-weight-bold'} block onClick={() => checkout()}>
-              CHECKOUT (${getCheckoutTotal()})
-            </Button>
+            {!isAuthenticated ? (
+              <Button type={'primary'} className={'font-weight-bold'} block onClick={() => props.history.push(getLoginUrl())}>
+                CHECKOUT (${getCheckoutTotal()})
+              </Button>
+            ) : (
+              <>
+                {isPending ? <Spin /> : null}
+                <PayPalButtons />
+              </>
+            )}
           </Space>
         </Card>
       </Col>
