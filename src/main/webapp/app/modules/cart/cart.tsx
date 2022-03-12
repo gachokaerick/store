@@ -9,6 +9,7 @@ import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog
 import { isIdPresent } from 'app/shared/util/entity-utils';
 import { getLoginUrl, REDIRECT_URL } from 'app/shared/util/url-utils';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import PaypalCheckout from 'app/modules/checkout/paypal-checkout';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
@@ -134,7 +135,11 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
             ) : (
               <>
                 {isPending ? <Spin /> : null}
-                <PayPalButtons />
+                <PaypalCheckout
+                  checkoutTotal={getCheckoutTotal()}
+                  catalogItems={catalogItems.filter(item => isIdPresent(cart, item.id))}
+                  getItemFromCartById={id => getItemFromCartById(id)}
+                />
               </>
             )}
           </Space>
