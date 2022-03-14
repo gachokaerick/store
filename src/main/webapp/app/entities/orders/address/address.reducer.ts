@@ -15,12 +15,23 @@ const initialState: EntityState<IAddress> = {
   updateSuccess: false,
 };
 
+export type IAddressQueryParams = {
+  query?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+  login?: string;
+};
+
 const apiUrl = 'services/orders/api/addresses';
 
 // Actions
 
-export const getEntities = createAsyncThunk('address/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+export const getEntities = createAsyncThunk('address/fetch_entity_list', async ({ page, size, sort, login }: IAddressQueryParams) => {
+  let requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+  if (login) {
+    requestUrl = requestUrl + `&login=${login}`;
+  }
   return axios.get<IAddress[]>(requestUrl);
 });
 

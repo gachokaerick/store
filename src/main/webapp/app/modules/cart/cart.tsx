@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { RouteComponentProps } from 'react-router-dom';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
+import { getEntities as getAddressItems } from 'app/entities/orders/address/address.reducer';
 import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/cart/cart.reducer';
 import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
@@ -20,8 +21,18 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const cart = useAppSelector(state => state.cart.items);
   const catalogItems = useAppSelector(state => state.catalogItem.entities);
   const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
+  const account = useAppSelector(state => state.authentication.account);
+  const addresses = useAppSelector(state => state.address.entities);
+
   const [{ isPending }] = usePayPalScriptReducer();
   const { TabPane } = Tabs;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // get user addresses
+      dispatch(getAddressItems({ login: account.login }));
+    }
+  }, []);
 
   useEffect(() => {
     if (cart.length > 0 && catalogItems.length !== cart.length) {
@@ -115,7 +126,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                 : null}
             </TabPane>
             <TabPane tab="Address" key="2">
-              Content of Tab Pane 2
+              {isAuthenticated ? <p>Please login to proceed</p> : <></>}
             </TabPane>
           </Tabs>
         </StickyContainer>
