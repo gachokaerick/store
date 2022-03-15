@@ -21,4 +21,5 @@ export const ACTIONS = {
   REMOVE_FROM_CART: 'Remove_From_Cart',
   REDUCE_FROM_CART: 'Reduce_From_Cart',
   SET_CART: 'Set_Cart',
+  SELECT_ADDRESS: 'Select_Address',
 };

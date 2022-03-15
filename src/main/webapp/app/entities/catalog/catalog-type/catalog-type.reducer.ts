@@ -96,13 +96,6 @@ export const CatalogTypeSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addCase(ACTIONS.SELECT_TYPE, (state, action: AnyAction) => {
-        if (action.payload) {
-          state.selectedItem = state.entities.filter(it => it.id.toString() === action.payload)[0];
-        } else {
-          state.selectedItem = defaultValue;
-        }
-      })
       .addMatcher(isFulfilled(getEntities), (state, action) => {
         return {
           ...state,

@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Button, Card, Col, Divider, Image, Row, Space, Spin, Typography } from 'antd';
+import { Button, Card, Col, Divider, Image, Radio, Row, Space, Spin, Typography } from 'antd';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { RouteComponentProps } from 'react-router-dom';
-import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EnvironmentOutlined, MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { getEntities as getCatalogItems } from 'app/entities/catalog/catalog-item/catalog-item.reducer';
-import { getEntities as getAddressItems } from 'app/entities/orders/address/address.reducer';
-import { addItemToCart, removeItemFromCart, reduceFromCart } from 'app/modules/cart/cart.reducer';
+import { getEntities as getAddressItems, selectAddress } from 'app/entities/orders/address/address.reducer';
+import { createEntity as createOrder } from 'app/entities/orders/order/order.reducer';
+import { addItemToCart, removeItemFromCart, reduceFromCart, setCartItems } from 'app/modules/cart/cart.reducer';
 import { ICartCatalogItem, ICatalogItem } from 'app/shared/model/catalog/catalog-item.model';
 import { isIdPresent } from 'app/shared/util/entity-utils';
 import { getLoginUrl, REDIRECT_URL } from 'app/shared/util/url-utils';
@@ -14,6 +15,8 @@ import PaypalCheckout from 'app/modules/checkout/paypal-checkout';
 import { Tabs } from 'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
 import './cart.scss';
+import { selectBrand } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
+import { IOrder } from 'app/shared/model/orders/order.model';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
@@ -23,6 +26,9 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
   const account = useAppSelector(state => state.authentication.account);
   const addresses = useAppSelector(state => state.address.entities);
+  const selectedAddress = useAppSelector(state => state.address.selectedItem);
+  const orderUpdateSuccess = useAppSelector(state => state.order.updateSuccess);
+  const orderUpdating = useAppSelector(state => state.order.updating);
 
   const [{ isPending }] = usePayPalScriptReducer();
   const { TabPane } = Tabs;
@@ -32,7 +38,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       // get user addresses
       dispatch(getAddressItems({ login: account.login }));
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (cart.length > 0 && catalogItems.length !== cart.length) {
@@ -40,6 +46,18 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       dispatch(getCatalogItems({ ids }));
     }
   }, [cart]);
+
+  useEffect(() => {
+    if (orderUpdateSuccess) {
+      dispatch(setCartItems([]));
+      props.history.push('/order' + props.location.search);
+    }
+  }, [orderUpdateSuccess]);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('address selected: ', selectedAddress);
+  }, [selectedAddress]);
 
   const getItemFromCartById = (id: number): ICartCatalogItem => {
     const items = cart?.filter(cartItem => cartItem.id === id);
@@ -73,6 +91,16 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
     </Sticky>
   );
 
+  const selectOrderAddress = id => {
+    // eslint-disable-next-line no-console
+    console.log('selecting address: ', id);
+    dispatch(selectAddress(id));
+  };
+
+  const submitOrder = (order: IOrder) => {
+    dispatch(createOrder(order));
+  };
+
   return (
     <Row
       gutter={[
@@ -83,7 +111,15 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
       <Col lg={16} xs={24}>
         <StickyContainer>
           <Tabs defaultActiveKey="1" size={'large'} renderTabBar={renderTabBar}>
-            <TabPane tab={`Cart (${cart.length})`} key="1">
+            <TabPane
+              tab={
+                <span>
+                  <ShoppingCartOutlined />
+                  Cart ({cart.length})
+                </span>
+              }
+              key="1"
+            >
               {catalogItems
                 ? catalogItems
                     .filter(item => isIdPresent(cart, item.id))
@@ -125,8 +161,34 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                     ))
                 : null}
             </TabPane>
-            <TabPane tab="Address" key="2">
-              {isAuthenticated ? <p>Please login to proceed</p> : <></>}
+            <TabPane
+              tab={
+                <span>
+                  <EnvironmentOutlined />
+                  Address
+                </span>
+              }
+              key="2"
+            >
+              {!isAuthenticated ? (
+                <Text strong>Please sign in to select an address</Text>
+              ) : addresses.length > 0 ? (
+                <Radio.Group onChange={e => selectOrderAddress(e.target.value)}>
+                  <Space direction="vertical">
+                    {addresses.map(address => (
+                      <Radio key={address.id} value={address.id}>
+                        <p>
+                          {address.country}, {address.city}, {address.town}, {address.street}, {address.zipcode}
+                        </p>
+                      </Radio>
+                    ))}
+                  </Space>
+                </Radio.Group>
+              ) : (
+                <Button type={'primary'} onClick={() => props.history.push('/address')}>
+                  Add Address
+                </Button>
+              )}
             </TabPane>
           </Tabs>
         </StickyContainer>
@@ -167,12 +229,25 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                     </Button>
                   ) : (
                     <>
-                      {isPending ? <Spin /> : null}
-                      <PaypalCheckout
-                        checkoutTotal={getCheckoutTotal()}
-                        catalogItems={catalogItems.filter(item => isIdPresent(cart, item.id))}
-                        getItemFromCartById={id => getItemFromCartById(id)}
-                      />
+                      {isPending || orderUpdating ? (
+                        <Spin />
+                      ) : (
+                        <>
+                          {cart.length > 0 && selectedAddress?.id ? (
+                            <PaypalCheckout
+                              selectedAddress={selectedAddress}
+                              checkoutTotal={getCheckoutTotal()}
+                              catalogItems={catalogItems.filter(item => isIdPresent(cart, item.id))}
+                              getItemFromCartById={id => getItemFromCartById(id)}
+                              submitOrder={order => submitOrder(order)}
+                            />
+                          ) : (
+                            <p className={'text-center'}>
+                              {cart.length} {selectedAddress}
+                            </p>
+                          )}
+                        </>
+                      )}
                     </>
                   )}
                 </Space>

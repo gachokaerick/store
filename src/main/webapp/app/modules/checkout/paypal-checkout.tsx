@@ -5,10 +5,13 @@ import { OrderResponseBody, PurchaseItem } from '@paypal/paypal-js/types/apis/or
 import { IPayment } from 'app/shared/model/orders/payment.model';
 import { OrderStatus } from 'app/shared/model/enumerations/order-status.model';
 import { IOrder } from 'app/shared/model/orders/order.model';
+import { IAddress } from 'app/shared/model/orders/address.model';
+import { IOrderItem } from 'app/shared/model/orders/order-item.model';
 
 export const PaypalCheckout = props => {
   const catalogItems: ReadonlyArray<ICatalogItem> = props.catalogItems;
   const currencyCode = 'USD';
+  const selectedAddress: Readonly<IAddress> = props.selectedAddress;
 
   const checkoutItems: PurchaseItem[] = catalogItems.map(item => ({
     name: `${item.name}`,
@@ -20,50 +23,52 @@ export const PaypalCheckout = props => {
     },
   }));
 
-  const makePayment = (paymentDetails: OrderResponseBody) => {};
+  const orderItems: IOrderItem[] = catalogItems?.map(item => ({
+    productName: item.name,
+    pictureUrl: item.pictureUrl,
+    unitPrice: item.price,
+    discount: 0,
+    units: props.getItemFromCartById(item.id).quantity,
+    productId: item.id,
+  }));
+
+  const makePayment = (paymentDetails: OrderResponseBody) => {
+    props.submitOrder(createOrderEntity(paymentDetails));
+  };
 
   const createOrderEntity = (paymentDetails: OrderResponseBody): IOrder => {
-    // return {
-    //   createTime: paymentDetails.create_time,
-    //   updateTime: paymentDetails.update_time,
-    //   paymentStatus: paymentDetails.status,
-    //   payerCountryCode: paymentDetails.payer.address.country_code,
-    //   payerEmail: paymentDetails.payer.email_address,
-    //   payerName: paymentDetails.payer.name.given_name,
-    //   payerSurname: paymentDetails.payer.name.surname,
-    //   payerId: paymentDetails.payer.payer_id,
-    //   currency: currencyCode,
-    //   amount: calculatePaymentAmount(paymentDetails),
-    //   paymentId: paymentDetails.id,
-    //   order: {
-    //     orderDate: paymentDetails.create_time,
-    //     orderStatus: OrderStatus.DRAFT,
-    //     description:
-    //   }
-    // };
     return {
       orderDate: paymentDetails.create_time,
       orderStatus: OrderStatus.DRAFT,
       description: paymentDetails.id + ': ' + paymentDetails.status,
       address: {
-        // set address b4 paying for order
+        ...selectedAddress,
       },
-      orderItems: [],
-      payments: [],
-      buyer: {},
+      orderItems,
+      payments: mapPayments(paymentDetails),
+      buyer: selectedAddress.buyer,
     };
   };
 
-  const calculatePaymentAmount = (paymentDetails: OrderResponseBody): number => {
-    let total = 0;
-    paymentDetails.purchase_units.forEach(
-      unit =>
-        (total += unit.payments.captures.reduce(
-          (amount, capture) => (capture.status === 'COMPLETED' ? amount + Number((capture.amount as any).value) : 0),
-          0
-        ))
-    );
-    return total;
+  const mapPayments = (paymentDetails: OrderResponseBody): IPayment[] => {
+    let payments: IPayment[] = [];
+    paymentDetails.purchase_units.forEach(unit => {
+      const mapped: IPayment[] = unit.payments.captures.map(capture => ({
+        createTime: `${capture.create_time}`,
+        updateTime: `${capture.update_time}`,
+        paymentStatus: `${capture.status}`,
+        payerCountryCode: paymentDetails.payer.address.country_code,
+        payerEmail: paymentDetails.payer.email_address,
+        payerName: paymentDetails.payer.name.given_name,
+        payerSurname: paymentDetails.payer.name.surname,
+        payerId: paymentDetails.payer.payer_id,
+        currency: `${(capture.amount as any).currency_code}`,
+        amount: Number((capture.amount as any).value),
+        paymentId: `${capture.id}`,
+      }));
+      payments = [...payments, ...mapped];
+    });
+    return payments;
   };
 
   return (

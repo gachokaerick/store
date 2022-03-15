@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
 import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IAddress, defaultValue } from 'app/shared/model/orders/address.model';
+import { ACTIONS } from 'app/config/constants';
 
 const initialState: EntityState<IAddress> = {
   loading: false,
@@ -84,6 +85,10 @@ export const deleteEntity = createAsyncThunk(
   },
   { serializeError: serializeAxiosError }
 );
+
+export const selectAddress = (entityId: number) => {
+  return { type: ACTIONS.SELECT_ADDRESS, payload: entityId };
+};
 
 // slice
 

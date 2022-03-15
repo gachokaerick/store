@@ -43,6 +43,10 @@ export function isFulfilledAction(action: AnyAction) {
   return action.type.endsWith('/fulfilled');
 }
 
+export function isSelectionAction(action: AnyAction) {
+  return action.type.startsWith('Select_');
+}
+
 const commonErrorProperties: Array<keyof SerializedError> = ['name', 'message', 'stack', 'code'];
 
 /**
@@ -121,6 +125,13 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
           state.updating = false;
           state.updateSuccess = false;
           state.errorMessage = action.error.message;
+        });
+        builder.addMatcher(isSelectionAction, (state, action) => {
+          if (action.payload) {
+            state.selectedItem = state.entities.filter(it => (it as any).id.toString() === action.payload)[0];
+          } else {
+            state.selectedItem = null;
+          }
         });
       }
     },
