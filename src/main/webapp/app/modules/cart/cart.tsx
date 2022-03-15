@@ -15,7 +15,6 @@ import PaypalCheckout from 'app/modules/checkout/paypal-checkout';
 import { Tabs } from 'antd';
 import { StickyContainer, Sticky } from 'react-sticky';
 import './cart.scss';
-import { selectBrand } from 'app/entities/catalog/catalog-brand/catalog-brand.reducer';
 import { IOrder } from 'app/shared/model/orders/order.model';
 
 export const Cart = (props: RouteComponentProps<{ url: string }>) => {
@@ -54,11 +53,6 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
     }
   }, [orderUpdateSuccess]);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('address selected: ', selectedAddress);
-  }, [selectedAddress]);
-
   const getItemFromCartById = (id: number): ICartCatalogItem => {
     const items = cart?.filter(cartItem => cartItem.id === id);
     if (items?.length > 0) {
@@ -92,8 +86,6 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
   );
 
   const selectOrderAddress = id => {
-    // eslint-disable-next-line no-console
-    console.log('selecting address: ', id);
     dispatch(selectAddress(id));
   };
 
@@ -242,9 +234,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
                               submitOrder={order => submitOrder(order)}
                             />
                           ) : (
-                            <p className={'text-center'}>
-                              {cart.length} {selectedAddress}
-                            </p>
+                            <p className={'text-center'}>Select an address to continue checkout</p>
                           )}
                         </>
                       )}

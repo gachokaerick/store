@@ -128,7 +128,7 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
         });
         builder.addMatcher(isSelectionAction, (state, action) => {
           if (action.payload) {
-            state.selectedItem = state.entities.filter(it => (it as any).id.toString() === action.payload)[0];
+            state.selectedItem = state.entities.filter(it => (it as any).id.toString() === action.payload.toString())[0];
           } else {
             state.selectedItem = null;
           }
