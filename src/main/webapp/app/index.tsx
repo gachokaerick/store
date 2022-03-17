@@ -25,7 +25,7 @@ const rootEl = document.getElementById('root');
 const paypalOptions = {
   'client-id': CUSTOM_ENV.PAYPAL_CLIENT_ID,
   currency: 'USD',
-  intent: 'capture',
+  intent: 'authorize',
 };
 
 const render = Component =>
