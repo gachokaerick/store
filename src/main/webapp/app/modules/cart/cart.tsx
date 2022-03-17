@@ -165,7 +165,7 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
               {!isAuthenticated ? (
                 <Text strong>Please sign in to select an address</Text>
               ) : addresses.length > 0 ? (
-                <Radio.Group onChange={e => selectOrderAddress(e.target.value)}>
+                <Radio.Group onChange={e => selectOrderAddress(e.target.value)} value={selectedAddress ? selectedAddress.id : null}>
                   <Space direction="vertical">
                     {addresses.map(address => (
                       <Radio key={address.id} value={address.id}>
@@ -186,65 +186,74 @@ export const Cart = (props: RouteComponentProps<{ url: string }>) => {
         </StickyContainer>
       </Col>
       <Col lg={8} xs={24}>
-        <StickyContainer className={'h-100'}>
-          <Sticky topOffset={0} bottomOffset={80}>
-            {({ style, isSticky }) => (
-              <Card title={`Cart Summary`} bordered={true} style={{ ...style, top: isSticky ? `${62 + style.top}px` : `0px` }}>
-                <Space direction={'vertical'} className={'w-100'}>
-                  <Row>
-                    <Col span={12}>
-                      <Text>Subtotal</Text>
-                    </Col>
-                    <Col span={12} className={'text-md-right'}>
-                      <Title level={4}>${getCheckoutTotal()}</Title>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <Text>Discount</Text>
-                    </Col>
-                    <Col span={12} className={'text-md-right'}>
-                      <Text>$0</Text>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <Text>Total</Text>
-                    </Col>
-                    <Col span={12} className={'text-md-right'}>
-                      <Title level={4}>${getCheckoutTotal()}</Title>
-                    </Col>
-                  </Row>
-                  {!isAuthenticated ? (
-                    <Button type={'primary'} className={'font-weight-bold'} block onClick={() => props.history.push(getLoginUrl())}>
-                      CHECKOUT (${getCheckoutTotal()})
-                    </Button>
-                  ) : (
-                    <>
-                      {isPending || orderUpdating ? (
-                        <Spin />
-                      ) : (
-                        <>
-                          {cart.length > 0 && selectedAddress?.id ? (
-                            <PaypalCheckout
-                              selectedAddress={selectedAddress}
-                              checkoutTotal={getCheckoutTotal()}
-                              catalogItems={catalogItems.filter(item => isIdPresent(cart, item.id))}
-                              getItemFromCartById={id => getItemFromCartById(id)}
-                              submitOrder={order => submitOrder(order)}
-                            />
-                          ) : (
-                            <p className={'text-center'}>Select an address to continue checkout</p>
-                          )}
-                        </>
-                      )}
-                    </>
-                  )}
-                </Space>
-              </Card>
-            )}
-          </Sticky>
-        </StickyContainer>
+        {cart.length > 0 ? (
+          <StickyContainer className={'h-100'}>
+            <Sticky topOffset={0} bottomOffset={80}>
+              {({ style, isSticky }) => (
+                <Card title={`Cart Summary`} bordered={true} style={{ ...style, top: isSticky ? `${62 + style.top}px` : `0px` }}>
+                  <Space direction={'vertical'} className={'w-100'}>
+                    <Row>
+                      <Col span={12}>
+                        <Text>Subtotal</Text>
+                      </Col>
+                      <Col span={12} className={'text-md-right'}>
+                        <Title level={4}>${getCheckoutTotal()}</Title>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}>
+                        <Text>Discount</Text>
+                      </Col>
+                      <Col span={12} className={'text-md-right'}>
+                        <Text>$0</Text>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col span={12}>
+                        <Text>Total</Text>
+                      </Col>
+                      <Col span={12} className={'text-md-right'}>
+                        <Title level={4}>${getCheckoutTotal()}</Title>
+                      </Col>
+                    </Row>
+                    {!isAuthenticated ? (
+                      <Button type={'primary'} className={'font-weight-bold'} block onClick={() => props.history.push(getLoginUrl())}>
+                        CHECKOUT (${getCheckoutTotal()})
+                      </Button>
+                    ) : (
+                      <>
+                        {isPending || orderUpdating ? (
+                          <Spin />
+                        ) : (
+                          <>
+                            {selectedAddress?.id ? (
+                              <PaypalCheckout
+                                selectedAddress={selectedAddress}
+                                checkoutTotal={getCheckoutTotal()}
+                                catalogItems={catalogItems.filter(item => isIdPresent(cart, item.id))}
+                                getItemFromCartById={id => getItemFromCartById(id)}
+                                submitOrder={order => submitOrder(order)}
+                              />
+                            ) : (
+                              <>
+                                {selectedAddress?.id ? null : (
+                                  <div>
+                                    <Divider />
+                                    <p className={'text-center'}>Select an address to continue checkout</p>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Space>
+                </Card>
+              )}
+            </Sticky>
+          </StickyContainer>
+        ) : null}
       </Col>
     </Row>
   );

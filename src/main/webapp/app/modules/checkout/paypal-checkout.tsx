@@ -32,24 +32,6 @@ export const PaypalCheckout = props => {
     productId: item.id,
   }));
 
-  const makePayment = (paymentDetails: OrderResponseBody) => {
-    props.submitOrder(createOrderEntity(paymentDetails));
-  };
-
-  const createOrderEntity = (paymentDetails: OrderResponseBody): IOrder => {
-    return {
-      orderDate: paymentDetails.create_time,
-      orderStatus: OrderStatus.DRAFT,
-      description: paymentDetails.id + ': ' + paymentDetails.status,
-      address: {
-        ...selectedAddress,
-      },
-      orderItems,
-      payments: mapPayments(paymentDetails),
-      buyer: selectedAddress.buyer,
-    };
-  };
-
   const mapPayments = (paymentDetails: OrderResponseBody): IPayment[] => {
     let payments: IPayment[] = [];
     paymentDetails.purchase_units.forEach(unit => {
@@ -69,6 +51,25 @@ export const PaypalCheckout = props => {
       payments = [...payments, ...mapped];
     });
     return payments;
+  };
+
+  const createOrderEntity = (paymentDetails: OrderResponseBody): IOrder => {
+    return {
+      orderDate: paymentDetails.create_time,
+      orderStatus: OrderStatus.DRAFT,
+      description: paymentDetails.id + ': ' + paymentDetails.status,
+      address: {
+        ...selectedAddress,
+      },
+      orderItems,
+      payments: mapPayments(paymentDetails),
+      buyer: selectedAddress.buyer,
+    };
+  };
+
+  const makePayment = (paymentDetails: OrderResponseBody) => {
+    const order = createOrderEntity(paymentDetails);
+    props.submitOrder(order);
   };
 
   return (
