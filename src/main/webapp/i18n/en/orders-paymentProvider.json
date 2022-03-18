@@ -1,0 +1,8 @@
+{
+  "storeApp": {
+    "PaymentProvider": {
+      "null": "",
+      "PAYPAL": "PAYPAL"
+    }
+  }
+}

@@ -19,6 +19,13 @@
         "catalogCatalogBrand": "Catalog Brand",
         "basketBasketItem": "Basket Item",
         "basketBasketCheckout": "Basket Checkout",
+        "ordersAuthorization": "Authorization",
+        "ordersNotification": "Notification",
+        "ordersCatalogType": "Catalog Type",
+        "ordersCatalogItem": "Catalog Item",
+        "ordersCatalogBrand": "Catalog Brand",
+        "ordersBasketItem": "Basket Item",
+        "ordersBasketCheckout": "Basket Checkout",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

@@ -1,0 +1,45 @@
+{
+  "storeApp": {
+    "ordersBasketCheckout": {
+      "home": {
+        "title": "Basket Checkouts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Basket Checkout",
+        "createOrEditLabel": "Create or edit a Basket Checkout",
+        "notFound": "No Basket Checkouts found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Basket Checkout {{ id }}?"
+      },
+      "detail": {
+        "title": "Basket Checkout"
+      },
+      "id": "ID",
+      "street": "Street",
+      "city": "City",
+      "town": "Town",
+      "country": "Country",
+      "zipcode": "Zipcode",
+      "createTime": "Create Time",
+      "updateTime": "Update Time",
+      "paymentStatus": "Payment Status",
+      "payerCountryCode": "Payer Country Code",
+      "payerEmail": "Payer Email",
+      "payerName": "Payer Name",
+      "payerSurname": "Payer Surname",
+      "payerId": "Payer Id",
+      "currency": "Currency",
+      "amount": "Amount",
+      "paymentId": "Payment Id",
+      "userLogin": "User Login",
+      "description": "Description"
+    }
+  },
+  "basketApp": {
+    "ordersBasketCheckout": {
+      "created": "A new Basket Checkout is created with identifier {{ param }}",
+      "updated": "A Basket Checkout is updated with identifier {{ param }}",
+      "deleted": "A Basket Checkout is deleted with identifier {{ param }}"
+    }
+  }
+}

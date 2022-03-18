@@ -56,7 +56,8 @@
       "CatalogItem",
       "CatalogBrand",
       "BasketItem",
-      "BasketCheckout"
+      "BasketCheckout",
+      "Authorization"
     ],
     "lastLiquibaseTimestamp": 1636867058000,
     "applications": {

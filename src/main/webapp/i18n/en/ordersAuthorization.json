@@ -1,0 +1,34 @@
+{
+  "storeApp": {
+    "ordersAuthorization": {
+      "home": {
+        "title": "Authorizations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Authorization",
+        "createOrEditLabel": "Create or edit a Authorization",
+        "notFound": "No Authorizations found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Authorization {{ id }}?"
+      },
+      "detail": {
+        "title": "Authorization"
+      },
+      "id": "ID",
+      "status": "Status",
+      "authId": "Auth Id",
+      "currencyCode": "Currency Code",
+      "amount": "Amount",
+      "expirationTime": "Expiration Time",
+      "paymentProvider": "Payment Provider",
+      "order": "Order"
+    }
+  },
+  "ordersApp": {
+    "ordersAuthorization": {
+      "created": "A new Authorization is created with identifier {{ param }}",
+      "updated": "A Authorization is updated with identifier {{ param }}",
+      "deleted": "A Authorization is deleted with identifier {{ param }}"
+    }
+  }
+}

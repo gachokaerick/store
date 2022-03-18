@@ -1,0 +1,28 @@
+{
+  "storeApp": {
+    "ordersCatalogBrand": {
+      "home": {
+        "title": "Catalog Brands",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Catalog Brand",
+        "createOrEditLabel": "Create or edit a Catalog Brand",
+        "notFound": "No Catalog Brands found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Catalog Brand {{ id }}?"
+      },
+      "detail": {
+        "title": "Catalog Brand"
+      },
+      "id": "ID",
+      "brand": "Brand"
+    }
+  },
+  "catalogApp": {
+    "ordersCatalogBrand": {
+      "created": "A new Catalog Brand is created with identifier {{ param }}",
+      "updated": "A Catalog Brand is updated with identifier {{ param }}",
+      "deleted": "A Catalog Brand is deleted with identifier {{ param }}"
+    }
+  }
+}
