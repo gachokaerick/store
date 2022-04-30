@@ -94,7 +94,7 @@ export const PaypalCheckout = props => {
         });
       }}
       onApprove={(data, actions) => {
-        return actions.order.authorize().then(details => {
+        return actions.order.capture().then(details => {
           makePayment(details);
         });
       }}
